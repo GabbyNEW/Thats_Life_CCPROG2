@@ -1,5 +1,15 @@
 import java.util.*;
+/** This program can take in specific arguments for testing. <P>
+ * ARGUMENT LIST:<P> -mt (manual turn) Player number turn is user-specified per round.<P>
+ * -ac (limited action cards) User specifies number of Action Cards before start of game. 
+ *	Note that after running out of decks and reshuffling, number of cards is back to 50. 
+ * @author gabby
+ *
+ */
 public class MainGame {
+	private static boolean ARG_MANUALTURN;
+	private static boolean ARG_LIMITEDACTIONCARD;
+	
 	private int numberOfPlayersInGame;
 	private ArrayList<ActionCard> actionCards;
 	private Player[] players;
@@ -18,7 +28,7 @@ public class MainGame {
 		actionCards = new ArrayList<ActionCard>();
 		turn = 0;
 		
-		generateDeckOfActionCards(actionCards);
+		generateDeckOfActionCards(actionCards, ARG_LIMITEDACTIONCARD);
 		
 		do {
 			System.out.print("Enter number of players: ");
@@ -41,7 +51,7 @@ public class MainGame {
 			players[i].setCareer("Athlete");
 	}
 	
-	public void generateDeckOfActionCards(ArrayList<ActionCard> actionCards) {
+	public void generateDeckOfActionCards(ArrayList<ActionCard> actionCards, boolean ARG_LIMITEDACTIONCARD) {
 		int i;
 		for (i = 0; i < 20; i++) {
 			actionCards.add(new ActionCard(0)); // create cards with ID 0 (collect from bank)
@@ -63,11 +73,17 @@ public class MainGame {
 			actionCards.get(i).generateSubID();
 			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
 		}
-		
 		Collections.shuffle(actionCards);
+		if (ARG_LIMITEDACTIONCARD) {
+			System.out.println("Enter number of Action Cards to start off: ");
+			int num = Integer.parseInt(input.nextLine());
+			ActionCard.setHead(num - 1);
+			System.out.println("NOTE: 50 Action cards are still generated, but head starts at specified input.");
+		}
+		
 	}
 	
-	public void displayActionCards(ArrayList<ActionCard> deck) {
+	public static void displayActionCards(ArrayList<ActionCard> deck) {
 		System.out.println("Action Cards generated (uses stack implementation):");
 		for (ActionCard card : deck)
 			System.out.print(card.getTypeOfCard() + ", ");
@@ -95,16 +111,20 @@ public class MainGame {
 	}
 	
 	public static void main(String[] args) {
+		// Command-line argument
+		MainGame.ARG_MANUALTURN = Arrays.asList(args).contains("-mt");
+		MainGame.ARG_LIMITEDACTIONCARD = Arrays.asList(args).contains("-ac");
+		
 		System.out.println("Welcome! This is an initial build of the \"That's Life!\" project. "
-				+ "More features to come in the final buld.\n");
+				+ "The program accepts a number of arguments for testing. Please refer to the provided Javadoc for details.\n");
 
 		MainGame game = new MainGame(); // Create game instance.
 		
 		game.preliminaryStart();
-		game.displayActionCards(game.actionCards);
+		MainGame.displayActionCards(game.actionCards);
 		
 		do {
-			String answer; // This is just for user confirmation if he wants to continue/exit the game.
+			String answer; // This is just for user confirmation if he wants to continue/exit the game. 
 			
 			game.phase1Game(game.turn); // The turn variable is for tracking who's player turn it is (Current player number - 1) e.g Player 1's turn -> turn = 0
 			
@@ -114,7 +134,13 @@ public class MainGame {
 			if (answer.equalsIgnoreCase("N"))
 				break;
 			
-			game.turn = (game.turn == (game.numberOfPlayersInGame - 1)) ? 0 : game.turn + 1;
+			if (ARG_MANUALTURN) {
+				System.out.print("Choose player turn: ");
+				game.turn = Integer.parseInt(game.input.nextLine()) - 1;
+			}	
+			else
+				game.turn = (game.turn == (game.numberOfPlayersInGame - 1)) ? 0 : game.turn + 1;
+			
 			System.out.println("--------");
 		} while (true);
 		
