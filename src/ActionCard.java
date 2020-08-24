@@ -16,10 +16,10 @@ import java.util.*;
  */
 
 public class ActionCard {
-	private int mainID, subID;
-	private String typeOfCard;
-	private String description;
-	private String toDoAction;
+	int mainID, subID;
+	String typeOfCard;
+	String description;
+	String toDoAction;
 	
 	private static int head; // stack implementation
 	
@@ -220,19 +220,19 @@ public class ActionCard {
 	
 	public static ActionCard pop(ArrayList<ActionCard> deck) { // return the top most card, then shift head to next card.
 		ActionCard temp = ActionCard.top(deck);
-		head--;
+		if(head > 0)
+		{
+			head--;
+		}
+		else	// when deck is finished, reshuffle
+		{
+			Collections.shuffle(deck);
+			head = 49;	
+		}	
+			
 		return temp;
 	}
-	
-	public int getMainID() {
-		return this.mainID;
-	}
-	
-	public String getTypeOfCard() {
-		return this.toDoAction;
-	}
 
-	@Override
 	public String toString() { // Return card name and its description.
 		return this.typeOfCard + "\n" + this.description + "\n";
 	}
