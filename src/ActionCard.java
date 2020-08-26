@@ -23,7 +23,7 @@ public class ActionCard {
 	
 	private static int head; // stack implementation
 	
-	Scanner input = new Scanner(System.in);
+	private Scanner input = new Scanner(System.in);
 	
 	ActionCard(int randomNumber) {
 		mainID = randomNumber;
@@ -220,8 +220,21 @@ public class ActionCard {
 	
 	public static ActionCard pop(ArrayList<ActionCard> deck) { // return the top most card, then shift head to next card.
 		ActionCard temp = ActionCard.top(deck);
-		head--;
+		if(head > 0) {
+			head--;
+		}
+		else {	// when deck is finished, reshuffle
+			System.out.println("DECK RAN OUT! Cards to be automatically reshuffled at NEXT turn.");
+			Collections.shuffle(deck);
+			MainGame.displayActionCards(deck);
+			head = 49;	
+		}
+
 		return temp;
+	}
+	
+	public static void setHead(int num) {
+		head = num;
 	}
 	
 	public int getMainID() {
@@ -229,7 +242,7 @@ public class ActionCard {
 	}
 	
 	public String getTypeOfCard() {
-		return this.toDoAction;
+		return this.typeOfCard;
 	}
 
 	@Override
