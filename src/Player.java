@@ -8,7 +8,7 @@ public class Player {
 	private int chosenPath;
 	private String career;
 	
-	private boolean graduated;
+	private boolean degree;
 	private int numberOfOffsprings;
 	
 	private int currentSpace; // For the player's current position on the board. Not yet used since I still have to learn javafx and MVC architecture.	
@@ -16,6 +16,11 @@ public class Player {
 	public Player(int playerNumber) {
 		this.playerNumber = playerNumber;
 		this.moneyBalance = 200000.00;
+	}
+	
+	public Player(int playerNumber, double startingMoney) {
+		this.playerNumber = playerNumber;
+		this.moneyBalance = startingMoney;
 	}
 	
 	public void addMoneyBalance(double amount) {
@@ -63,5 +68,9 @@ public class Player {
 	
 	public double getMoneyLoan() {
 		return this.moneyLoan;
+	}
+	
+	public boolean hasDegree() {
+		return this.degree;
 	}
 }

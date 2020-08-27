@@ -144,14 +144,14 @@ public class ActionCard {
 	public void doAction(Player[] players, int turn, int numberOfPlayersInGame) {
 		switch (mainID) {
 			case 0 : { // Collect from bank
-				players[turn].addMoneyBalance(20000.00);
-				System.out.println("$20000 added to Player " + (turn + 1));
+				players[turn].addMoneyBalance(30000.00);
+				System.out.println("$30000 added to Player " + (turn + 1));
 				System.out.println("Updated MONEY: " + players[turn].getMoneyBalance());
 				break;
 			}
 			case 1: { // Pay the bank
-				players[turn].reduceMoneyBalance(20000.00);
-				System.out.println("$20000 deducted from Player " + (turn + 1));
+				players[turn].reduceMoneyBalance(30000.00);
+				System.out.println("$30000 deducted from Player " + (turn + 1));
 				System.out.println("Updated current MONEY: " + players[turn].getMoneyBalance());
 				break;
 			}
@@ -169,15 +169,15 @@ public class ActionCard {
 							System.out.println("You cannot choose yourself!");
 						
 					} while (playerNum == (turn + 1) || (playerNum < 1 || playerNum > numberOfPlayersInGame));
-					players[turn].reduceMoneyBalance(20000.00);
-					players[playerNum - 1].addMoneyBalance(20000.00);
+					players[turn].reduceMoneyBalance(30000.00);
+					players[playerNum - 1].addMoneyBalance(30000.00);
 				}
 				else { // Choose all players
 					for (int i = 0; i <= numberOfPlayersInGame - 1; i++)
 						if (i != turn) {
-							players[turn].reduceMoneyBalance(20000.00);
-							players[i].addMoneyBalance(20000.00);
-							System.out.println("PAID Player " + (i + 1)+ " $20000.00");
+							players[turn].reduceMoneyBalance(30000.00);
+							players[i].addMoneyBalance(30000.00);
+							System.out.println("PAID Player " + (i + 1)+ " $30000.00");
 						}
 				}
 				System.out.println("Updated current MONEY: $" + players[turn].getMoneyBalance());
@@ -197,15 +197,15 @@ public class ActionCard {
 							System.out.println("You cannot choose yourself!");
 						
 					} 	while (playerNum == (turn + 1) || (playerNum < 1 || playerNum > numberOfPlayersInGame));
-					players[turn].addMoneyBalance(20000.00);
-					players[playerNum - 1].reduceMoneyBalance(20000.00);
+					players[turn].addMoneyBalance(30000.00);
+					players[playerNum - 1].reduceMoneyBalance(30000.00);
 				}
 				else { // Choose all players
 					for (int i = 0; i <= numberOfPlayersInGame - 1; i++)
 						if (i != turn) {
-							players[turn].addMoneyBalance(20000.00);
-							players[i].reduceMoneyBalance(20000.00);
-							System.out.println("COLLECTED from Player " + (i + 1)+ " $20000.00");
+							players[turn].addMoneyBalance(30000.00);
+							players[i].reduceMoneyBalance(30000.00);
+							System.out.println("COLLECTED from Player " + (i + 1)+ " $30000.00");
 						}
 				}
 				System.out.println("Updated current MONEY: $" + players[turn].getMoneyBalance());
