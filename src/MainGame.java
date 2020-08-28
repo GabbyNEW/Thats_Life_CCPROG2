@@ -133,7 +133,7 @@ public class MainGame {
 					+ "'s turn! | MONEY: " + this.players[this.turn].getMoneyBalance() + 
 					" | LOAN: " + this.players[this.turn].getMoneyLoan() + "| INTEREST: " + this.players[this.turn].getMoneyInterest());
 			
-			ActionCard drawn = this.drawDeck(); // Draw a card
+			ActionCard drawn = this.drawDeck(this.actionCards); // Draw a card
 			
 			System.out.println("Action card drawn: " + drawn.toString()); // Display drawn card
 			
@@ -160,7 +160,7 @@ public class MainGame {
 	 * 	and shifts the head of the deck (uses stack implementation).
 	 * @return action card drawn from top of the deck,
 	 */
-	public ActionCard drawDeck() {
+	public ActionCard drawDeck(ArrayList<ActionCard> deck) {
 		return ActionCard.pop(this.actionCards);
 	}
 	
