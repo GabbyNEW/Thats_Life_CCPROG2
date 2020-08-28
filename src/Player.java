@@ -30,20 +30,21 @@ public class Player {
 	public void addLoan() {
 		moneyLoan += 20000.00;
 		moneyBalance += 20000.00;
-		moneyLoanInterest += 5000;
+		moneyLoanInterest += 5000.00;
+		// Multiple instances of this may be printed if more loans are needed.
+		// This does not specify which player has a loan added. This may have to be improved upon.
+		System.out.println("Warning! A loan added to a player. Make sure to pay it back.");
+		System.out.println("Updated loan and interest for a player total is now " + (this.moneyLoan + this.moneyLoanInterest));
 	}
 	
 	public void reduceMoneyBalance(double amount) {
-		if (moneyBalance - amount < 0) {
+		while (moneyBalance - amount < 0) // keep on borrowing money until there is enough balance to reduce amount to
 			addLoan();
-			moneyBalance -= amount;
-		}
-		else
-			moneyBalance -= amount;
+		moneyBalance -= amount;
 	}
 	
-	public boolean payLoan() {
-		if (moneyBalance - (moneyLoan + moneyLoanInterest) < 0) {
+	public boolean payLoan() { // Pay off a player's entire loan
+		if (moneyBalance - (moneyLoan + moneyLoanInterest) < 0) { // Not enough money to pay loan
 			return false;
 		} 
 		else {
@@ -55,7 +56,11 @@ public class Player {
 	}
 	
 	public void setCareer(String career) {
-		this.career = career; 
+		this.career = career;
+	}
+	
+	public void setLoan(double amount) { // This is ONLY for -cl (custom loan) argument
+		this.moneyLoan = amount;
 	}
 	
 	public String getCareer() {
@@ -68,6 +73,10 @@ public class Player {
 	
 	public double getMoneyLoan() {
 		return this.moneyLoan;
+	}
+	
+	public double getMoneyInterest() {
+		return this.moneyLoanInterest;
 	}
 	
 	public boolean hasDegree() {

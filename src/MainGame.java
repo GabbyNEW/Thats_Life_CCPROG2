@@ -3,14 +3,15 @@ import java.util.*;
  * ARGUMENT LIST:<P> 
  * -mt (manual turn) Player number turn is user-specified per round.<P>
  * -ac (limited action cards) User specifies number of Action Cards before start of game. Note that after running out of decks and reshuffling, number of cards is back to 50.
- * -cm (Custom money) User specifies a custom starting money for each players (default $200000) 
+ * -cm (custom money) user specifies a custom starting money for each players (default $200000) 
+ * -cl (custom loan) user specifies a custom starting loan balance to every player (does not affect interest)
  * @author gabby
- *
  */
 public class MainGame {
 	private static boolean ARG_MANUALTURN;
 	private static boolean ARG_LIMITEDACTIONCARD;
-	private static boolean ARG_SPECIFIEDSTARTINGMONEY;
+	private static boolean ARG_CUSTOMSTARTINGMONEY;
+	private static boolean ARG_CUSTOMSTARTINGLOAN;
 	
 	private int numberOfPlayersInGame;
 	private ArrayList<ActionCard> actionCards;
@@ -30,7 +31,7 @@ public class MainGame {
 		actionCards = new ArrayList<ActionCard>();
 		turn = 0; // Before game starts, set player turn to 0 (e.g Player 1's turn, value is 0; Player 2's turn, value is 1 etc.)
 		
-		generateDeckOfActionCards(actionCards, ARG_LIMITEDACTIONCARD);
+		generateDeckOfActionCards(actionCards, ARG_LIMITEDACTIONCARD); // Generate deck of action cards and shuffle them
 		
 		do {
 			// Ask user how many players in the game (2-3)
@@ -47,7 +48,7 @@ public class MainGame {
 		} while (numberOfPlayersInGame < 2 || numberOfPlayersInGame > 3);
 		
 		// Instantiate Players based on how much players there are
-		if (ARG_SPECIFIEDSTARTINGMONEY) { // -cm (Custom money) arguemnt
+		if (ARG_CUSTOMSTARTINGMONEY) { // -cm (Custom money) arguemnt
 			System.out.print("Enter custom starting money:");
 			double startingMoney = Double.parseDouble(input.nextLine());
 			for (int i = 0; i < numberOfPlayersInGame; i++)
@@ -57,7 +58,15 @@ public class MainGame {
 			for (int i = 0; i < numberOfPlayersInGame; i++)
 				players[i] = new Player((i+1));
 		
-		// This will obviously change during phase 2 development
+		// -cl set custom loan if argument is included
+		if (ARG_CUSTOMSTARTINGLOAN) {
+			System.out.println("Set custom starting LOAN for each player: ");
+			double amount = Double.parseDouble(input.nextLine());
+			for (Player player : players)
+				player.setLoan(amount);
+		}
+		
+		// Predefine each player's career to Athlete (for now)
 		System.out.println("Notice: Career assigned to each player is Athlete for now.");
 		for (int i = 0; i < numberOfPlayersInGame; i++)
 			players[i].setCareer("Athlete");
@@ -91,7 +100,8 @@ public class MainGame {
 			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
 		}
 		Collections.shuffle(actionCards); // Shuffle after generating decks
-		if (ARG_LIMITEDACTIONCARD) { // -ac see documentation
+		if (ARG_LIMITEDACTIONCARD) { // -ac (limited action cards) see documentation
+			displayActionCards(actionCards);
 			System.out.println("Enter number of Action Cards to start off: ");
 			int num = Integer.parseInt(input.nextLine());
 			ActionCard.setHead(num - 1);
@@ -120,41 +130,46 @@ public class MainGame {
 			String answer; // This is just for user confirmation if he wants to continue/exit the game. 
 			
 			System.out.println("PLAYER " + (this.turn+1) 
-					+ "'s turn! | MONEY: " + this.players[this.turn].getMoneyBalance() + " | LOAN: " + this.players[this.turn].getMoneyLoan());
+					+ "'s turn! | MONEY: " + this.players[this.turn].getMoneyBalance() + 
+					" | LOAN: " + this.players[this.turn].getMoneyLoan() + "| INTEREST: " + this.players[this.turn].getMoneyInterest());
 			
-			ActionCard drawn = this.drawDeck();
+			ActionCard drawn = this.drawDeck(); // Draw a card
 			
-			System.out.println("Action card drawn: " + drawn.toString());
+			System.out.println("Action card drawn: " + drawn.toString()); // Display drawn card
 			
-			drawn.doAction(this.players, this.turn, numberOfPlayersInGame);
+			drawn.doAction(this.players, this.turn, numberOfPlayersInGame); // Execute card action
 			
-			System.out.println("Continue playing? Y/N: ");
+			System.out.println("Continue playing? Y/N: "); // Prompt user if to continue program
 			answer = MainGame.input.nextLine();
-			
 			if (answer.equalsIgnoreCase("N"))
 				break;
 			
-			if (ARG_MANUALTURN) {
+			if (ARG_MANUALTURN) { // Specify next player turn for -mt
 				System.out.print("Choose player turn: ");
 				this.turn = Integer.parseInt(MainGame.input.nextLine()) - 1;
 			}
 			
-			else
+			else // default increment player turn
 				this.turn = (this.turn == (this.numberOfPlayersInGame - 1)) ? 0 : this.turn + 1;
 			
 			System.out.println("--------");
 		} while (true);
 	}
-	
+	/**	This method is called whenever a player draws a card (action card) from a deck. 
+	 * 	It calls the pop method of that respective deck to retrieve the top most card 
+	 * 	and shifts the head of the deck (uses stack implementation).
+	 * @return action card drawn from top of the deck,
+	 */
 	public ActionCard drawDeck() {
 		return ActionCard.pop(this.actionCards);
 	}
 	
 	public static void main(String[] args) {
-		// Command-line argument
+		// Command-line arguments
 		MainGame.ARG_MANUALTURN = Arrays.asList(args).contains("-mt");
 		MainGame.ARG_LIMITEDACTIONCARD = Arrays.asList(args).contains("-ac");
-		MainGame.ARG_SPECIFIEDSTARTINGMONEY = Arrays.asList(args).contains("-cm");
+		MainGame.ARG_CUSTOMSTARTINGMONEY = Arrays.asList(args).contains("-cm");
+		MainGame.ARG_CUSTOMSTARTINGLOAN = Arrays.asList(args).contains("-cl");
 		
 		System.out.println("Welcome! This is an initial build of the \"That's Life!\" project. "
 				+ "THE PROGRAM SUPPORTS TERMINAL-ARGUMENTS for testing. Please refer to the provided Javadoc for details.\n");
@@ -169,3 +184,10 @@ public class MainGame {
 	}
 
 }
+
+/* Changes:
+ * Added -cl (custom loan) argument
+ * Fixed bug where a player can only do one loan request when multiple requests are needed.
+ * Fixed toDoAction String typo for some action cards (at assignDescriptions() method)
+ * Added exit behavior when user enters invalid head value for stacks (-ac)
+*/

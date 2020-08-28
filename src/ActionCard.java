@@ -21,7 +21,7 @@ public class ActionCard {
 	private String description;
 	private String toDoAction;
 	
-	private static int head; // stack implementation
+	private static int head; // stack implementation, head will determine what index to draw card
 	
 	private Scanner input = new Scanner(System.in);
 	
@@ -112,13 +112,13 @@ public class ActionCard {
 				case 0 : {
 					typeOfCard = "LAWSUIT";
 					description = "Settle a case!";
-					toDoAction = "Choose A Player, then Pay $15000";
+					toDoAction = "Choose A Player, then Pay $30000";
 					break;
 				}
 				case 1 : {
 					typeOfCard = "CHRISTMAS BONUS";
 					description = "Wish all a happy Merry Christmas!";
-					toDoAction = "Pay $15000 To Each Players";
+					toDoAction = "Pay $30000 To Each Players";
 					break;
 				}
 			}
@@ -128,13 +128,13 @@ public class ActionCard {
 				case 0 : {
 					typeOfCard = "FILE A LAWSUIT!";
 					description = "Bring them to court!";
-					toDoAction = "Choose a player, then collect $5000";
+					toDoAction = "Choose a player, then collect $30000";
 					break;
 				}
 				case 1 : {
 					typeOfCard = "IT'S YOUR BIRTHDAY!";
 					description = "It's your day! Go celebrate your birthday with others!";
-					toDoAction = "Collect $5000 From Each Players";
+					toDoAction = "Collect $30000 From Each Players";
 					break;
 				}
 			}
@@ -214,7 +214,7 @@ public class ActionCard {
 		}
 	}
 	
-	public static ActionCard top(ArrayList<ActionCard> deck) { // return the top most card (this method is NOT YET USED)
+	public static ActionCard top(ArrayList<ActionCard> deck) {
 		return deck.get(head);
 	}
 	
@@ -223,17 +223,19 @@ public class ActionCard {
 		if(head > 0) {
 			head--;
 		}
-		else {	// when deck is finished, reshuffle
+		else {	// when deck runs out, reshuffle
 			System.out.println("DECK RAN OUT! Cards to be automatically reshuffled at NEXT turn.");
 			Collections.shuffle(deck);
 			MainGame.displayActionCards(deck);
 			head = 49;	
 		}
-
+		
 		return temp;
 	}
 	
-	public static void setHead(int num) {
+	public static void setHead(int num) { // Only for -ac argument
+		if (num < 1 || num > 50)
+			System.exit(-1);
 		head = num;
 	}
 	
