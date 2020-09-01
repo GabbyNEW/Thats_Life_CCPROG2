@@ -32,11 +32,6 @@ public class Controller implements ActionListener {
 		Controller.startGUI = new StartGUI();
 		Controller controller = new Controller(startGUI);
 		
-		/* game.gettingStarted();
-		MainGame.displayActionCards();
-		
-		game.phase1Game(); */
-		
 	}
 
 	@Override
