@@ -9,6 +9,7 @@ public class Controller implements ActionListener {
 	
 	private static MainGame game;
 	private static StartGUI startGUI;
+	private static BoardGUI boardGUI;
 	
 	public Controller (StartGUI startGUI) {
 		startGUI.setListener(this);
@@ -29,15 +30,17 @@ public class Controller implements ActionListener {
 
 		game = new MainGame(); // Create game instance.
 		
-		Controller.startGUI = new StartGUI();
+		startGUI = new StartGUI();
 		Controller controller = new Controller(startGUI);
-		
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("Start")) {
+		Object command = e.getSource();
+		if (command.equals(startGUI.startButton) && e.getActionCommand().equals("Next")) {
 			game.gameIntro(Integer.parseInt(startGUI.getPlayerNumberFieldString())); // Set players
+			startGUI.destroy();
+			boardGUI = new BoardGUI();
 		}
 	}
 }

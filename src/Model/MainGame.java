@@ -22,11 +22,15 @@ public class MainGame {
 	private static ArrayList<ActionCard> actionCards;
 	private static Player[] players;
 	private static int turn;
+	
+	// GUI control
+	private static boolean drawBoardState;
 
 	private static Scanner input = new Scanner(System.in);
 	
 	public MainGame() { // Constructor
 		System.out.println("PROGRAM START! KEEP THE TERMINAL OPEN FOR REAL-TIME PROGRAM RUN LOG AND TERMINAL ARGUMENTS INPUT.");
+		drawBoardState = true;
 		// Begin instantiation
 		actionCards = new ArrayList<ActionCard>(); // instantiate actionCards
 		turn = 0; // Before game starts, set player turn to 0 (e.g Player 1's turn, value is 0; Player 2's turn, value is 1 etc.)
@@ -124,6 +128,10 @@ public class MainGame {
 		ARG_LIMITEDACTIONCARD = Arrays.asList(args).contains("-ac");
 		ARG_CUSTOMSTARTINGMONEY = Arrays.asList(args).contains("-cm");
 		ARG_CUSTOMSTARTINGLOAN = Arrays.asList(args).contains("-cl");
+	}
+	
+	public static int getNumberOfPlayers() {
+		return numberOfPlayersInGame;
 	}
 	
 	// DEPRECATED METHODS. No longer being worked on. (DO NOT DELETE)
