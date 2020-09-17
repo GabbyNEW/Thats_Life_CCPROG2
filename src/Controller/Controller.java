@@ -14,6 +14,10 @@ public class Controller implements ActionListener {
 	public Controller (StartGUI startGUI) {
 		startGUI.setListener(this);
 	}
+	
+	public Controller (BoardGUI GUI) {
+		GUI.setListener(this);
+	}
 
 	/**
 	 * Driver method. <P> 
@@ -31,7 +35,7 @@ public class Controller implements ActionListener {
 		game = new MainGame(); // Create game instance.
 		
 		startGUI = new StartGUI();
-		Controller controller = new Controller(startGUI);
+		new Controller(startGUI);
 	}
 
 	@Override
@@ -41,6 +45,8 @@ public class Controller implements ActionListener {
 			game.gameIntro(Integer.parseInt(startGUI.getPlayerNumberFieldString())); // Set players
 			startGUI.destroy();
 			boardGUI = new BoardGUI();
+			new Controller(boardGUI);
 		}
+
 	}
 }

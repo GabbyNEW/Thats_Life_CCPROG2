@@ -3,12 +3,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.geom.*;
+import java.awt.image.BufferedImage;
 
 import Model.MainGame;
 
+@SuppressWarnings("serial")
 public class StartGUI extends JFrame {
 	private JFrame frame;
-	private JPanel panel, panelNorth, panelSouth, panelCenter;
+	private JPanel panel;
 	private JLabel gameIconLabel, playerNumberText;
 	private ImageIcon gameIcon;
 	private JComboBox<String> playerNumberBox;
@@ -32,14 +34,14 @@ public class StartGUI extends JFrame {
 		gridConstraints.weighty = 0.2;
 		
 		// Place logo image
+		gameIcon = scaleImage(new ImageIcon("logo.jpg"), 500, 500);
+		gameIconLabel = new JLabel();
+		gameIconLabel.setIcon(gameIcon);
 		gridConstraints.insets = new Insets(25, 0, 0, 0); // Pad logo only for that grid
 		gridConstraints.gridwidth = 2;
 		gridConstraints.gridx = 0;
 		gridConstraints.gridy = 0;
 		gridConstraints.anchor = GridBagConstraints.PAGE_START;
-		gameIcon = new ImageIcon("logo.jpg");
-		gameIconLabel = new JLabel();
-		gameIconLabel.setIcon(gameIcon);
 		panel.add(gameIconLabel, gridConstraints);
 		
 		// Place text label "Number of players:"
@@ -66,6 +68,7 @@ public class StartGUI extends JFrame {
 		frame.add(panel);
 		frame.revalidate();
 	}
+
 	
 	public void destroy() {
 		// Remove starting window
@@ -81,5 +84,25 @@ public class StartGUI extends JFrame {
 	public String getPlayerNumberFieldString() {
 		return (String) playerNumberBox.getSelectedItem(); // Returns an object, cast object as String
 	}
+	
+	// thanks stackoverflow https://stackoverflow.com/questions/6714045/how-to-resize-jlabel-imageicon
+   public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
+        int nw = icon.getIconWidth();
+        int nh = icon.getIconHeight();
+
+        if(icon.getIconWidth() > w)
+        {
+          nw = w;
+          nh = (nw * icon.getIconHeight()) / icon.getIconWidth();
+        }
+
+        if(nh > h)
+        {
+          nh = h;
+          nw = (icon.getIconWidth() * nh) / icon.getIconHeight();
+        }
+
+        return new ImageIcon(icon.getImage().getScaledInstance(nw, nh, Image.SCALE_DEFAULT));
+    }
 
 }
