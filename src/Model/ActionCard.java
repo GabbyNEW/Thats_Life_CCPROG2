@@ -21,7 +21,6 @@ import java.util.*;
  */
 
 public class ActionCard extends Cards {
-	private static int head; // stack implementation, head will determine what index to draw card
 	
 	private Scanner input = new Scanner(System.in);
 	
@@ -38,7 +37,6 @@ public class ActionCard extends Cards {
 	 */
 	ActionCard(int randomNumber) {
 		mainID = randomNumber;
-		head = 49;
 	}
 	
 	/**
@@ -157,33 +155,18 @@ public class ActionCard extends Cards {
 				// Add money to player
 				players[turn].addMoneyBalance(30000.00);
 				System.out.println("$30000 added to Player " + (turn + 1));
-				System.out.println("Updated MONEY: " + players[turn].getMoneyBalance());
 				break;
 			}
 			case 1: { // Pay the bank
 				// Reduce money from player
 				players[turn].reduceMoneyBalance(30000.00);
 				System.out.println("$30000 deducted from Player " + (turn + 1));
-				System.out.println("Updated current MONEY: " + players[turn].getMoneyBalance());
 				break;
 			}
 			case 2 : { // Pay the player
 				if (subID == 0) { // Choose a player to pay to
-					int playerNum;
-					do {
 						// Ask which player to pay to
-						System.out.println("Choose player number to pay: ");
-						playerNum = Integer.parseInt(input.nextLine());
-						
-						if (playerNum < 1 || playerNum > numberOfPlayersInGame)
-							System.out.println("Oops wrong input!");
-						
-						else if (playerNum == (turn + 1))
-							System.out.println("You cannot choose yourself!");
-						
-					} while (playerNum == (turn + 1) || (playerNum < 1 || playerNum > numberOfPlayersInGame)); // Repeats input if invalid
-					players[turn].reduceMoneyBalance(30000.00); // Reduce money from current player
-					players[playerNum - 1].addMoneyBalance(30000.00); // Add money to selected player
+						System.out.println("Choose player number to pay event.");
 				}
 				else { // Pay all players
 					for (int i = 0; i <= numberOfPlayersInGame - 1; i++)
@@ -193,26 +176,11 @@ public class ActionCard extends Cards {
 							System.out.println("PAID Player " + (i + 1)+ " $30000.00");
 						}
 				}
-				System.out.println("Updated current MONEY: $" + players[turn].getMoneyBalance());
 				break;
 			}
 			case 3 : { // Collect from player
 				if (subID == 0) { // Choose a player to collect money
-					int playerNum;
-					do {
-						// Ask which player to collect money from
-						System.out.println("Choose Player number to collect: ");
-						playerNum = Integer.parseInt(input.nextLine());
-						
-						if ((playerNum < 1 || playerNum > numberOfPlayersInGame))
-							System.out.println("Oops wrong input!");
-						
-						else if (playerNum == (turn + 1))
-							System.out.println("You cannot choose yourself!");
-						
-					} 	while (playerNum == (turn + 1) || (playerNum < 1 || playerNum > numberOfPlayersInGame)); // Repeats input if invalud
-					players[turn].addMoneyBalance(30000.00);
-					players[playerNum - 1].reduceMoneyBalance(30000.00);
+					System.out.println("Choose Player number to collect event.");
 				}
 				else { // Collect money from all players
 					for (int i = 0; i <= numberOfPlayersInGame - 1; i++)
@@ -222,54 +190,10 @@ public class ActionCard extends Cards {
 							System.out.println("COLLECTED from Player " + (i + 1)+ " $30000.00");
 						}
 				}
-				System.out.println("Updated current MONEY: $" + players[turn].getMoneyBalance());
 				break;
 			}
 		}
 	}
-	
-	/**
-	 * Returns the topmost card (pointed by the head).
-	 * @param deck Action Card deck to get the topmost card from
-	 * @return the topmost card
-	 */
-	
-	public static ActionCard top(ArrayList<ActionCard> deck) {
-		return deck.get(head);
-	}
-	
-	/**
-	 * Returns the topmost card and shifts the head (decrement). 
-	 * If the head is 0, return the last card, then automatically shuffle the deck and reset the head value to 49. 
-	 * @param deck Action Card deck to get the topmost card from
-	 * @return the topmost card
-	 */
-	public static ActionCard pop(ArrayList<ActionCard> deck) { // return the top most card, then shift head to next card.
-		ActionCard temp = ActionCard.top(deck);
-		if(head > 0) { // Deck is NOT about to become empty
-			head--;
-		}
-		else {	// Deck is about to become empty. Shuffle deck and reset head value.
-			System.out.println("DECK RAN OUT! Cards to be automatically reshuffled at NEXT turn.");
-			Collections.shuffle(deck);
-			MainGame.displayActionCards();
-			head = 49;	
-		}
-		
-		return temp;
-	}
-	
-	/**
-	 * Manually sets the head value for the stack implementation of the Action Card deck.
-	 * This is only called on -ac (limited action card) terminal argument is made on program run.
-	 * @param num specified head value to set to
-	 */
-	public static void setHead(int num) { // Only for -ac argument
-		if (num < 0 || num > 49)
-			System.exit(-1); // Prevent program run on invalid head input
-		head = num;
-	}
-	
 }
  
 

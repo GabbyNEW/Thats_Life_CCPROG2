@@ -6,285 +6,410 @@ import java.util.*;
  *  This program takes in terminal arguments for testing.<P>
  *  ARGUMENT LIST:<P> 
  * -mt (manual turn) Player number turn is user-specified per round.<P>
- * -ac (limited action cards) User specifies number of Action Cards before start of game. Note that after running out of decks and reshuffling, number of cards is back to 50.<P>
  * -cm (custom money) user specifies a custom starting money for each players (default $200000) <P>
  * -cl (custom loan) user specifies a custom starting loan balance to every player (does not affect interest)<P>
  */
 public class MainGame {
-	// Argument variables
-	private static boolean ARG_MANUALTURN;
-	private static boolean ARG_LIMITEDACTIONCARD;
-	private static boolean ARG_CUSTOMSTARTINGMONEY;
-	private static boolean ARG_CUSTOMSTARTINGLOAN;
-	
 	// Game-influenced variables
-	private static int numberOfPlayersInGame;
-	private static ArrayList<ActionCard> actionCards;
 	private static Player[] players;
-	private static int turn;
+	private static int numberOfPlayersInGame;
+	
+	private static DeckOfActionCards actionCards;
+	private static DeckOfBlueCards blueCards;
+	private static DeckOfCareerCards careerCards;
+	private static DeckOfSalaryCards salaryCards;
+	private static ArrayList<HouseCard> houseCards;
+	
+	private static int turn; // value 0 for player 1; value 1 for player 2 etc.
+	private static int randomMoveNumber; // value generated when a player "throws the dice" during the game
+	private static int numberOfMoves; // 1 - 10
 
 	private static Scanner input = new Scanner(System.in);
+	private static Random rand = new Random();
 	
 	public MainGame() { // Constructor
-		System.out.println("PROGRAM START! KEEP THE TERMINAL OPEN FOR REAL-TIME PROGRAM RUN LOG AND TERMINAL ARGUMENTS INPUT.");
+		System.out.println("Program start.");
 		// Begin instantiation
-		actionCards = new ArrayList<ActionCard>(); // instantiate actionCards
-		turn = 0; // Before game starts, set player turn to 0 (e.g Player 1's turn, value is 0; Player 2's turn, value is 1 etc.)
+		actionCards = new DeckOfActionCards(); // instantiate actionCards
+		blueCards = new DeckOfBlueCards(); // instantiate blueCards
+		careerCards = new DeckOfCareerCards();	//instantiate careerCards
+		salaryCards = new DeckOfSalaryCards(); // instantiate salaryCards
+		houseCards = new ArrayList<HouseCard>();
 		
-		// Generate decks
-		generateDeckOfCards();
+		for (int i = 0; i < 9; i++)
+			houseCards.add(new HouseCard(i));
+		
+		turn = 0; // Before game starts, set player turn to 0 (e.g Player 1's turn, value is 0; Player 2's turn, value is 1 etc.)
 	}
 	
-	// Create and instantiate objects based on given input on the intro GUI
+	/**
+	 * This method immediately executes after the player clicks "Next" at the start window.
+	 * This proceeds to instantiate players based on the selected number of players.
+	 * @param numberOfPlayersInGame
+	 */
 	public void gameIntro(int numberOfPlayersInGame) {
 		// Instantiate players
 		System.out.println("System: Instantiate " + numberOfPlayersInGame + " players.");
 		MainGame.numberOfPlayersInGame = numberOfPlayersInGame;
 		players = new Player[numberOfPlayersInGame];
 		for (int i = 0; i < numberOfPlayersInGame; i++)
-			players[i] = new Player((i+1));
-		
-		
+			players[i] = new Player(i);
 	}
 	
-	/**	This method is responsible for generating a deck of Action Cards.
-	 * 	The deck uses stack implementation in handling the drawing of cards. 
-	 * 	This means there is a head value pointing to the card to be drawn.
-	 *   
-	 * 	The cards are created in sequential order: all cards of ID 0 are first created, then ID 1, until ID 3.
-	 * 	After creation, shuffle the cards and set head 49 value (pointing to the last index). <P>
-	 * 	User can set -ac before program run to specify a custom head value.
-	 * 	
-	 * @param actionCards ArrayList of ActionCard to create decks to
-	 * @param ARG_LIMITEDACTIONCARD Argument modifier for setting which index to start drawing a card. Resets at next reshuffle.
-	 */
-	public void generateDeckOfCards() {
-		// Begin instantiation of action cards
-		int i;
-		for (i = 0; i < 20; i++) {	// 20/50
-			actionCards.add(new ActionCard(0)); // create cards with ID 0 (collect from bank)
-			actionCards.get(i).generateSubID(); 
-			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
-		}
-		for (i = 20; i < 40; i++) {	//20/50
-			actionCards.add(new ActionCard(1)); // create cards with ID 1 (pay the bank)
-			actionCards.get(i).generateSubID();
-			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
-		}
-		for (i = 40; i < 45; i++) {	// 5/50
-			actionCards.add(new ActionCard(2)); // ID 2 (pay the player)
-			actionCards.get(i).generateSubID();
-			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
-		}
-		for (i = 45; i < 50; i++) {	//5/50
-			actionCards.add(new ActionCard(3)); // ID 3 (collect from player)
-			actionCards.get(i).generateSubID();
-			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
-		}
-		Collections.shuffle(actionCards); // Shuffle after generating decks
-		if (ARG_LIMITEDACTIONCARD) { // -ac (limited action cards)
-			// display generated action cards, ask user at which card sequence to start drawing (end program if invalid input)
-			displayActionCards();
-			System.out.println("Enter number of Action Cards to start off: ");
-			int num = Integer.parseInt(input.nextLine());
-			ActionCard.setHead(num - 1);
-			System.out.println("NOTE: 50 Action cards are still generated, but head starts at specified input.");
-		}
-	}
-	/**
-	 * Display on the terminal all cards generated on a given deck.
-	 * @param deck the deck to show all cards
-	 */
-	public void displayDeck(Object deck) {
-		if (deck instanceof ActionCard) {
-			System.out.println("System: Showing all generated ACTION CARDS:");
-			for (ActionCard card : actionCards)
-				System.out.print(card.getTypeOfCard() + ", ");
-			System.out.println("\n");
-		}
-	}
-	
-	/**	This method is called whenever a player draws a card (action card) from a deck. 
-	 * 	It calls the pop method of that respective deck to retrieve the top most card 
-	 * 	and shifts the head of the deck (uses stack implementation).
-	 * @return action card drawn from top of the deck,
-	 */
-	public ActionCard drawDeck(ArrayList<ActionCard> deck) {
-		return ActionCard.pop(actionCards);
+	public void throwDice() {
+		while (numberOfMoves == 0) // Prevent 0, make sure all previous moves have been used up before this is called 
+			numberOfMoves = rand.nextInt(8); // (TODO reset to 11) Throw a dice (1-10)
+		System.out.println("Move: " + numberOfMoves);
 	}
 	
 	/**
-	 * This method is called by the controller to determine the 
-	 * @param argument
-	 * @return
+	 * Moves the player across the board and updates its player location based on the given random number generated
+	 * @param numOfMoves
 	 */
-	public static void setArguments(String[] args) {
-		// Command-line arguments
-		ARG_MANUALTURN = Arrays.asList(args).contains("-mt");
-		ARG_LIMITEDACTIONCARD = Arrays.asList(args).contains("-ac");
-		ARG_CUSTOMSTARTINGMONEY = Arrays.asList(args).contains("-cm");
-		ARG_CUSTOMSTARTINGLOAN = Arrays.asList(args).contains("-cl");
-	}
-	
-	// DEPRECATED METHODS. No longer being worked on. (DO NOT DELETE)
-	
-	/** This is what executes at the start of the program before the first round of the game.
-	 * First, a deck of Action Cards is generated.
-	 * Next, the program asks the user how many players are there (2-3), then uses that to instantiate players.<P>
-	 * If -cm enabled, set custom starting money, otherwise default $200000<P>
-	 * If -cl enabled, set custom starting loan, otherwise default no starting loan<P>
-	 * Each player's career will be assigned as Athlete (for now). <P>
-	 * 
-	 * After this, the game starts at phase1Game() method.
-	 * @deprecated METHOD NO LONGER BEING WORKED ON (PHASE 1)
-	 */
-	public void preliminaryStart() {
-		actionCards = new ArrayList<ActionCard>(); // instantiate actionCards
-		turn = 0; // Before game starts, set player turn to 0 (e.g Player 1's turn, value is 0; Player 2's turn, value is 1 etc.)
-		
-		generateDeckOfActionCards(actionCards); // Generate deck of action cards and shuffle them
-		
-		do {
-			// Ask user how many players in the game (2-3)
-			System.out.print("Enter number of players: ");
-			numberOfPlayersInGame = Integer.parseInt(input.nextLine());
-			players = new Player[numberOfPlayersInGame];
+	public void movePlayer() {
+		int[] newLocation = new int[2]; // This is where to store the new player location (then assign it to player as its new location)
+			newLocation = players[turn].getPlayerLocation();
 			
-			// Check valid input
-			if (numberOfPlayersInGame < 1 || numberOfPlayersInGame > 3)
-			 System.out.println("Invalid input!");
-			else if(numberOfPlayersInGame == 1)
-				System.out.println("The game is NOT designed for single player.");
+		newLocation = movePastMagentaSpaceLanded(newLocation);
 			
-		} while (numberOfPlayersInGame < 2 || numberOfPlayersInGame > 3);
-		
-		// Instantiate Players based on how much players there are AND set starting money if -cm enabled
-		if (ARG_CUSTOMSTARTINGMONEY) { // -cm (Custom money) arguemnt
-			// Ask for custom starting money for each players, then proceed to create players
-			System.out.print("Enter custom starting money:");
-			double startingMoney = Double.parseDouble(input.nextLine());
-			for (int i = 0; i < numberOfPlayersInGame; i++)
-				players[i] = new Player((i+1), startingMoney);
-		}
-		else // default starting money $200000, proceed to create players
-			for (int i = 0; i < numberOfPlayersInGame; i++)
-				players[i] = new Player((i+1));
-		
-		// -cl set custom loan
-		if (ARG_CUSTOMSTARTINGLOAN) {
-			System.out.println("Set custom starting LOAN for each player: ");
-			double amount = Double.parseDouble(input.nextLine());
-			for (Player player : players) // For each player in players (array), set their loan
-				player.setLoan(amount);
-		}
-		
-		// Predefine each player's career to Athlete (for now)
-		System.out.println("Notice: Career assigned to each player is Athlete for now.");
-		for (int i = 0; i < numberOfPlayersInGame; i++)
-			players[i].setCareer("Athlete");
-	}
-	
-	/**
-	 * 	This method facilitates the flow of each round of the game. 
-	 * 	It handles the drawing of cards, the execution of the card's instructions, and modifies a player's status.<P>
-	 *	First, show the current player's status (e.g money balance, loan amount)
-	 * 	Then draw a card. (Uses stack implementation, head starts at the last card (index 49).
-	 * 	Show the card details (type of card, description and instructions).
-	 * 	Execute the action of the card.<P>
-	 * 
-	 * 	If -mt (manual turn) is enabled, the method asks at the end of each round who the next player turn should be. <P>
-	 * 	Note that this method may become deprecated at phase 2 development.
-	 *  @param turn current player turn (e.g Player 1's turn, the value is 0; Player 2's turn, the value is 1)
-	 *  @deprecated METHOD NO LONGER BEING WORKED ON (PHASE 1)
-	 */
-	public void phase1Game() {
-		do {
-			String answer; // user confirmation if he wants to continue/exit the game. 
-			
-			// show player status
-			System.out.println("PLAYER " + (turn+1) 
-					+ "'s turn! | MONEY: " + players[turn].getMoneyBalance() + 
-					" | LOAN: " + players[turn].getMoneyLoan() + "| INTEREST: " + players[turn].getMoneyInterest());
-			
-			ActionCard drawn = this.drawDeck(actionCards); // Draw a card
-			
-			System.out.println("Action card drawn: " + drawn.toString()); // Display drawn card
-			
-			drawn.doAction(players, turn, numberOfPlayersInGame); // Execute card action
-			
-			System.out.println("Continue playing? Y/N: "); // Prompt user if to continue program
-			answer = MainGame.input.nextLine();
-			if (answer.equalsIgnoreCase("N"))
-				break;
-			
-			if (ARG_MANUALTURN) { // -mt (manual turn) if enabled, Specify next player turn 
-				System.out.print("Choose player turn: ");
-				turn = Integer.parseInt(MainGame.input.nextLine()) - 1;
+		// Move the player throughout the board, decrement numOfMoves each time location is updated, repeat until no more moves left.
+		// Player stops upon reaching a magenta space
+		if (players[turn].getLifePath() == 1) { // Career path BEFORE Junction
+			while ((newLocation[0] >= 0 && newLocation[1] == 0) && (newLocation[0] < 10 && newLocation[1] == 0) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [0,0] – [10,0]
+				newLocation[0]++;
+				numberOfMoves--;
 			}
-			
-			else // default increment player turn
-				turn = (turn == (numberOfPlayersInGame - 1)) ? 0 : turn + 1;
-			
-			System.out.println("--------");
-		} while (true);
+			while ((newLocation[0] == 10 && newLocation[1] >= 0) && (newLocation[0] == 10 && newLocation[1] < 3) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [10,0] – [10,3]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] <= 10 && newLocation[1] == 3) && (newLocation[0] > 5 && newLocation[1] == 3) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [10,3] – [5,3]
+				newLocation[0]--;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 5 && newLocation[1] >= 3) && (newLocation[0] == 5 && newLocation[1] < 5) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [5,3] – [5,5]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 5 && newLocation[1] == 5) && (newLocation[0] < 10 && newLocation[1] == 5) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [5,5] – [10,5]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 10 && newLocation[1] >= 5) && (newLocation[0] == 10 && newLocation[1] < 7) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [10,5] – [10,7]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] <= 10 && newLocation[1] == 7) && (newLocation[0] > 5 && newLocation[1] == 7) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [10,7] – [5,7] CONJUNCTION
+				newLocation[0]--;
+				numberOfMoves--;
+			}
+		}
+		
+		else if (players[turn].getLifePath() == 2) { //  College path BEFORE Junction
+			while ((newLocation[0] == 0 && newLocation[1] >= 0) && (newLocation[0] == 0 && newLocation[1] < 11) && numberOfMoves != 0) { // [0,0] – [11,0]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 0 && newLocation[1] == 11) && (newLocation[0] < 2 && newLocation[1] == 11) && numberOfMoves != 0) { // [0,11] – [2,11]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 2 && newLocation[1] <= 11) && (newLocation[0] == 2 && newLocation[1] > 3) && numberOfMoves != 0) { // [2,11] – [2,3]
+				newLocation[1]--;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 2 && newLocation[1] == 3) && (newLocation[0] < 3 && newLocation[1] == 3) && numberOfMoves != 0) { // [2,3] – [3,3]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 3 && newLocation[1] >= 3) && (newLocation[0] == 3 && newLocation[1] < 10) && numberOfMoves != 0) { // [3,3] – [3,10]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 3 && newLocation[1] == 10) && (newLocation[0] < 4 && newLocation[1] == 10) && numberOfMoves != 0) { // [3,10] – [4,10]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 4 && newLocation[1] <= 10) && (newLocation[0] == 4 && newLocation[1] > 7) && numberOfMoves != 0) { // [4,10] – [4,7]
+				newLocation[1]--;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 4 && newLocation[1] == 7) && (newLocation[0] < 5 && newLocation[1] == 7) && numberOfMoves != 0) { // [4,7] – [5,7]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+		}
+		
+		else if (players[turn].getLifePath() == 3) { //  Career path AFTER Junction
+			while ((newLocation[0] == 5 && newLocation[1] >= 7) && (newLocation[0] == 5 && newLocation[1] < 13) && numberOfMoves != 0) { // [5,7] – [5,13]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] <= 5 && newLocation[1] == 13) && (newLocation[0] > 1 && newLocation[1] == 13) && numberOfMoves != 0) { // [5,13] – [1,13]
+				newLocation[0]--;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 1 && newLocation[1] >= 13) && (newLocation[0] == 1 && newLocation[1] < 16) && numberOfMoves != 0) { // [1,13] – [1,16]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 1 && newLocation[1] == 16) && (newLocation[0] < 6 && newLocation[1] == 16) && numberOfMoves != 0) { // [1,16] – [6,16]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 6 && newLocation[1] >= 16) && (newLocation[0] == 6 && newLocation[1] < 19) && numberOfMoves != 0) { // [6,16] – [6,19]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 6 && newLocation[1] == 19) && (newLocation[0] < 9 && newLocation[1] == 19) && numberOfMoves != 0) { // [6,19] – [9,19]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 9 && newLocation[1] <= 19) && (newLocation[0] == 9 && newLocation[1] > 15) && numberOfMoves != 0) { // [9,19] – [9,15]
+				newLocation[1]--;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 9 && newLocation[1] == 15) && (newLocation[0] < 10 && newLocation[1] == 15) && numberOfMoves != 0) { // [9,15] – [10,15]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 10 && newLocation[1] <= 15) && (newLocation[0] == 10 && newLocation[1] > 14) && numberOfMoves != 0) { // [10,15] – [10,14]
+				newLocation[1]--;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 10 && newLocation[1] == 14) && (newLocation[0] < 12 && newLocation[1] == 14) && numberOfMoves != 0) { // [10,14] – [12,14]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 12 && newLocation[1] >= 14) && (newLocation[0] == 12 && newLocation[1] < 19) && numberOfMoves != 0) { // [12,14] – [12,19]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 12 && newLocation[1] == 19) && (newLocation[0] >= 12 && newLocation[1] == 19) && numberOfMoves != 0) { // [12,19] – [15+,19] END SPACE
+				newLocation[0]++; // may move past the endspace
+				numberOfMoves--;
+			}
+		}
+		
+		else if (players[turn].getLifePath() == 4) { //  Family path AFTER Junction
+			while ((newLocation[0] == 5 && newLocation[1] >= 7) && (newLocation[0] == 5 && newLocation[1] < 9) && numberOfMoves != 0) { // [5,7] – [5,9]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 5 && newLocation[1] == 9) && (newLocation[0] < 7 && newLocation[1] == 9) && numberOfMoves != 0) { // [5,9] – [7,9]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 7 && newLocation[1] >= 9) && (newLocation[0] == 7 && newLocation[1] < 13) && numberOfMoves != 0) { // [7,9] – [7,13]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 7 && newLocation[1] == 13) && (newLocation[0] < 9 && newLocation[1] == 13) && numberOfMoves != 0) { // [7,13] – [9,13]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 9 && newLocation[1] <= 13) && (newLocation[0] == 9 && newLocation[1] > 12) && numberOfMoves != 0) { // [9,13] – [9,12]
+				newLocation[1]--;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 9 && newLocation[1] == 12) && (newLocation[0] < 10 && newLocation[1] == 12) && numberOfMoves != 0) { // [9,12] – [10,12]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 10 && newLocation[1] <= 12) && (newLocation[0] == 10 && newLocation[1] > 9) && numberOfMoves != 0) { // [10,12] – [10,9]
+				newLocation[1]--;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 10 && newLocation[1] == 9) && (newLocation[0] < 12 && newLocation[1] == 9) && numberOfMoves != 0) { // [10,9] – [12,9]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 12 && newLocation[1] <= 9) && (newLocation[0] == 12 && newLocation[1] > 1) && numberOfMoves != 0) { // [12,9] – [12,1]
+				newLocation[1]--;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 12 && newLocation[1] == 1) && (newLocation[0] < 14 && newLocation[1] == 1) && numberOfMoves != 0) { // [12,1] – [14,1]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 14 && newLocation[1] >= 1) && (newLocation[0] == 14 && newLocation[1] < 15) && numberOfMoves != 0) { // [14,1] – [14,15]
+				newLocation[1]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] >= 14 && newLocation[1] == 15) && (newLocation[0] < 15 && newLocation[1] == 15) && numberOfMoves != 0) { // [14,15] – [15,15]
+				newLocation[0]++;
+				numberOfMoves--;
+			}
+			while ((newLocation[0] == 15 && newLocation[1] >= 15) && (newLocation[0] == 15 && newLocation[1] >= 15) && numberOfMoves != 0) { // [15,15] – [15,19+] END
+				newLocation[1]++; // may move past the endspace
+				numberOfMoves--;
+			}
+		}
+		numberOfMoves = 0;
+		// No more moves left, or if numberOfMoves != 0 assume player landed at Magenta space. Proceed to assign new location to the player.
+		players[turn].updateCurrentLocation(newLocation);
+		
+		// TODO add statement to set player end status to true if has moved on or past the end space located at [15,19]
 	}
-	
-	/**	This method is responsible for generating a deck of Action Cards.
-	 * 	The deck uses stack implementation in handling the drawing of cards. 
-	 * 	This means there is a head value pointing to the card to be drawn.
-	 *   
-	 * 	The cards are created in sequential order: all cards of ID 0 are first created, then ID 1, until ID 3.
-	 * 	After creation, shuffle the cards and set head 49 value (pointing to the last index). <P>
-	 * 	User can set -ac before program run to specify a custom head value.
-	 * 	
-	 * @param actionCards ArrayList of ActionCard to create decks to
-	 * @param ARG_LIMITEDACTIONCARD Argument modifier for setting which index to start drawing a card. Resets at next reshuffle.
-	 * @deprecated METHOD NO LONGER BEING WORKED ON (PHASE 1)
-	 */
-	public void generateDeckOfActionCards(ArrayList<ActionCard> actionCards) {
-		// Begin instantiation of action cards
-		int i;
-		for (i = 0; i < 20; i++) {	// 20/50
-			actionCards.add(new ActionCard(0)); // create cards with ID 0 (collect from bank)
-			actionCards.get(i).generateSubID(); 
-			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
-		}
-		for (i = 20; i < 40; i++) {	//20/50
-			actionCards.add(new ActionCard(1)); // create cards with ID 1 (pay the bank)
-			actionCards.get(i).generateSubID();
-			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
-		}
-		for (i = 40; i < 45; i++) {	// 5/50
-			actionCards.add(new ActionCard(2)); // ID 2 (pay the player)
-			actionCards.get(i).generateSubID();
-			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
-		}
-		for (i = 45; i < 50; i++) {	//5/50
-			actionCards.add(new ActionCard(3)); // ID 3 (collect from player)
-			actionCards.get(i).generateSubID();
-			actionCards.get(i).assignDescriptions(actionCards.get(i).getMainID());
-		}
-		Collections.shuffle(actionCards); // Shuffle after generating decks
-		if (ARG_LIMITEDACTIONCARD) { // -ac (limited action cards)
-			// display generated action cards, ask user at which card sequence to start drawing (end program if invalid input)
-			displayActionCards();
-			System.out.println("Enter number of Action Cards to start off: ");
-			int num = Integer.parseInt(input.nextLine());
-			ActionCard.setHead(num - 1);
-			System.out.println("NOTE: 50 Action cards are still generated, but head starts at specified input.");
-		}
 
+	/**
+	 * Get the player out of the magenta space to prevent getting stuck.
+	 * @param newLocation current coordinate of the player
+	 * @return shifted coordinates after moving past the magenta space (if applicable), else no effect
+	 */
+	private int[] movePastMagentaSpaceLanded(int[] newLocation) {
+		if (Spaces.getSpaceType(newLocation) == 2) { 
+			if (newLocation[0] == 3 && newLocation[1] == 7) // College Choice
+				newLocation[1]++;
+			else if (newLocation[0] == 5 && newLocation[1] == 7) // Conjunction
+				newLocation[1]++;
+			else if (newLocation[0] == 2 && newLocation[1] == 11) // Graduate
+				newLocation[1]--;
+			else if (newLocation[0] == 14 && newLocation[1] == 5) // Baby
+				newLocation[1]++;
+			else if (newLocation[0] == 12 && newLocation[1] == 6) // Buy House
+				newLocation[1]--;
+			else if (newLocation[0] == 9 && newLocation[1] == 12) // Get Married
+				newLocation[0]++;
+			else if (newLocation[0] == 1 && newLocation[1] == 16) // Search Job
+				newLocation[0]++;
+			else if (newLocation[0] == 8 && newLocation[1] == 3) // Get Married (2)
+				newLocation[0]--;
+		}
+		
+		numberOfMoves--;
+		return newLocation;
 	}
 	
 	/**
-	 * This method shows all the ActionCards generated
-	 * @param deck Action Card deck to show cards
-	 * @deprecated METHOD NO LONGER BEING WORKED ON (PHASE 1)
+	 * Player takes one Career Card and Salary Card. 
+	 * @return ArrayList of cards: one career card[0] and one salary card[1]
 	 */
-	public static void displayActionCards() { 
-		System.out.println("Action Cards generated (uses stack implementation):");
-		for (ActionCard card : actionCards)
-			System.out.print(card.getTypeOfCard() + ", ");
-		System.out.println("\n");
+	public ArrayList<Cards> executeStartLifePathCareer() {
+		ArrayList<Cards> cardsDrawn = new ArrayList<Cards>();
+		Cards temp;
+		
+		// Keep drawing salary cards until ... 
+		while (DeckOfCareerCards.top().isDegreeRequired() // Degree must not be required
+				|| DeckOfCareerCards.top().equals(getCurrentPlayer().getCareer()) // Career card must not be equal to current player's career  
+				|| DeckOfCareerCards.top().hasOwner()) // No one has taken this card yet
+			DeckOfCareerCards.pop();
+		
+		temp = DeckOfCareerCards.top();
+		DeckOfCareerCards.top().setHasOwner(true);
+		DeckOfCareerCards.shuffle();
+		cardsDrawn.add(temp);
+		
+		// Draw salary card
+		temp = DeckOfSalaryCards.pop();
+		DeckOfSalaryCards.shuffle();
+		
+		cardsDrawn.add(temp);
+		
+		getCurrentPlayer().setNewCareer((CareerCard) cardsDrawn.get(0), (SalaryCard) cardsDrawn.get(1));
+		
+		return cardsDrawn;
+		
 	}
+
+	public void executeStartLifePathCollegeCareer() {
+		getCurrentPlayer().setLoan();
+	}
+	
+	public ActionCard executeOrangeSpace() {
+		ActionCard cardDrawn = DeckOfActionCards.pop();
+		
+		cardDrawn.doAction(players, turn, numberOfPlayersInGame); // Manipulate player stats based on the card
+		
+		return cardDrawn;
+	}
+	
+	public static int executeMagentaSpace() {
+		int magentaID = MagentaSpaces.getMagentaID(getCurrentPlayer().getPlayerLocation()); // Check what kind of magenta space it is
+		
+		switch (magentaID) {
+		case 0 : { // College Career Choice
+		} break;
+		case 1 : { // Job Search
+		} break;
+		case 2 : { // Buy House
+		} break;
+		case 3 : { // Get Married
+			
+		} break;
+		case 4 : { // Baby
+		} break;
+		case 5 : { // Graduate
+		} break;
+		case 6 : { // Conjunction
+		} break;
+		default : System.out.println("Magenta coordinate not recognized.");
+		}
+		
+		return magentaID;
+	}
+	
+	/**
+	 * Set current player to be married (Get Married event)
+	 * @return generated number (-1 if already married)
+	 */
+	public static int executeGetMarried() {
+		int randomNumber = MagentaSpaces.getMarried(players, turn);
+		
+		return randomNumber;
+	}
+
+	/**
+	 * Graduates the player (Graduate event)
+	 */
+	public static void executeGraduate() {
+		getCurrentPlayer().setGraduate(true);
+	}
+	
+	public static int getNumberofplayersingame() {
+		return numberOfPlayersInGame;
+	}
+	
+	public static Player[] getPlayers() {
+		return players;
+	}
+	
+	public static Player getCurrentPlayer() {
+		return players[turn];
+	}
+	
+	public static void nextTurn() { // TODO: skip players who are done playing
+		if (numberOfPlayersInGame == 2) // Cycle from 0 to 1 (Two players)
+			turn = (turn == 0) ? turn+1 : 0;
+		else // Cycle from 0 to 2 (Three players)
+			turn = (turn < 2) ? turn+1 : 0;
+	}
+	
+	/**
+	 * Returns the index value of who the current player's turn is.
+	 * @return turn value (0 for player 1, 1 for player 2 etc.)
+	 */
+	public static int getTurn() {
+		return turn;
+	}
+	
+	public static int getNumberOfMoves() {
+		return numberOfMoves;
+	}
+	
+	public static boolean isAllPlayersEnded() {
+		if (numberOfPlayersInGame == 2)
+			return (players[0].hasReachedEndSpace() && players[1].hasReachedEndSpace());
+		else
+			return (players[0].hasReachedEndSpace() && players[1].hasReachedEndSpace() && players[2].hasReachedEndSpace());
+	}
+	
+
 }

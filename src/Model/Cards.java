@@ -2,7 +2,7 @@ package Model;
 
 import java.util.Random;
 
-public class Cards {
+public abstract class Cards {
 	protected int mainID, subID;
 	protected String typeOfCard;
 	protected String description;
@@ -27,11 +27,19 @@ public class Cards {
 	}
 	
 	/**
-	 * Returns the action card's mainID value
+	 * Returns the card's mainID value
 	 * @return mainID value of an action card
 	 */
 	public int getMainID() {
 		return this.mainID;
+	}
+	
+	/**
+	 * Returns the card's subID value. Some types of cards do not need a subID.
+	 * @return subID value of an action card.
+	 */
+	public int getSubID() {
+		return this.subID;
 	}
 	
 	/**
@@ -42,6 +50,10 @@ public class Cards {
 		return this.typeOfCard;
 	}
 
+	public String getToDoInstruction() {
+		return this.toDoAction;
+	}
+	
 	/**
 	 * Provides the string value of the card name its description, and instruction.
 	 * @return the string value  of the card name its description, and instruction.
