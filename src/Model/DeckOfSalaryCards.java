@@ -49,6 +49,18 @@ public class DeckOfSalaryCards {
 	// TODO: generate deck of salary cards
 	}
 	
+	/**
+	 * Get a salary card with given salary
+	 * @param salary salary of the card to find
+	 * @return salary card found
+	 */
+	public static SalaryCard getCard(String salary) {
+		for (SalaryCard e : salaryCards)
+			if (e.getSalary() == Double.parseDouble(salary))
+				return e;
+		return null;
+	}
+	
 	public static void shuffle () {
 		Collections.shuffle(salaryCards);
 		head = 9;

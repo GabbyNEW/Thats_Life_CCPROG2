@@ -67,61 +67,228 @@ public class BlueCard extends Cards {
 		}
 	}
 	
-	public void doAction (int mainID, ArrayList<Player> players, int turn)
-	{
-		Random rand = new Random ();
-		// TODO this shit
+	public String doAction (Player[] players, int turn, int nRand) {
+		boolean isCase2 = false;
+		int matchedPlayerTurn = -1;
+		
+		double payment = 0;
+		String message = null;
+		
 		switch (mainID)
 		{
-			case 0 : 
+			case 0 : // LAWSUIT
 			{
-				
-			}
-			case 1 : 
+				if (players[turn].getCareer().contentEquals("LAWYER")) { // Case 1 : Current player matches blue card
+					players[turn].addMoneyBalance(15000.00);
+					message = "Same career! Paid yourself.";
+				}
+				else {
+					// Check if other players match the blue card
+					for (Player e : players)
+						if (e.getCareer().contentEquals("LAWYER")) {
+							isCase2 = true;
+							matchedPlayerTurn = e.getPlayerNumber();
+						}
+					
+					payment = nRand * 10000 + 50000;
+					
+					
+					if (isCase2) { // Case 2 : There is another player matching the blue card
+						players[matchedPlayerTurn].addMoneyBalance(payment);
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Player" + (matchedPlayerTurn + 1) + ".";
+					}
+					
+					else { // Case 3 : No matching occurred. Pay to Bank.
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Bank [" + typeOfCard;
+					}
+				}
+			} break;
+			
+			case 1 : // SALARY TAX DUE
 			{
-				
-			}
-			case 2 : 
+				if (players[turn].getCareer().contentEquals("ACCOUNTANT")) { // Case 1 : Current player matches blue card
+					players[turn].addMoneyBalance(15000.00);
+					message = "Same career! Paid yourself.";
+				}
+				else {
+					// Check if other players match the blue card
+					for (Player e : players)
+						if (e.getCareer().contentEquals("ACCOUNTANT")) {
+							isCase2 = true;
+							matchedPlayerTurn = e.getPlayerNumber();
+						}
+					
+					payment = players[turn].getSalary();
+					
+					
+					if (isCase2) { // Case 2 : There is another player matching the blue card
+						players[matchedPlayerTurn].addMoneyBalance(payment);
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Player" + (matchedPlayerTurn + 1) + ".";
+					}
+					
+					else { // Case 3 : No matching occurred. Pay to Bank.
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Bank [" + typeOfCard;
+					}
+				}
+			} break;
+			
+			case 2 : // TIP THE SERVER
 			{	
-				// pay $1000 x random number (1 - 50)
-				int nVal;
-				nVal = rand.nextInt(50);
-				nVal += 1;	// to get value from 1 - 50 instead of 0 - 49;
-				players.get(turn).reduceMoneyBalance(nVal * 1000.00);
-				break;
-				
-			}
-			case 3 : 
+				if (players[turn].getCareer().contentEquals("SERVER")) { // Case 1 : Current player matches blue card
+					players[turn].addMoneyBalance(15000.00);
+					message = "Same career! Paid yourself.";
+				}
+				else {
+					// Check if other players match the blue card
+					for (Player e : players)
+						if (e.getCareer().contentEquals("SERVER")) {
+							isCase2 = true;
+							matchedPlayerTurn = e.getPlayerNumber();
+						}
+					
+					payment = nRand * 1000.00;
+					
+					
+					if (isCase2) { // Case 2 : There is another player matching the blue card
+						players[matchedPlayerTurn].addMoneyBalance(payment);
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Player" + (matchedPlayerTurn + 1) + ".";
+					}
+					
+					else { // Case 3 : No matching occurred. Pay to Bank.
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Bank [" + typeOfCard;
+					}
+				}
+			} break;
+			
+			case 3 :  // SKI ACCIDENT
 			{	
-				// pay $10000
-				players.get(turn).reduceMoneyBalance(10000.00);
-				break;
-			}
-			case 4 : 
+				if (players[turn].getCareer().contentEquals("DOCTOR")) { // Case 1 : Current player matches blue card
+					players[turn].addMoneyBalance(15000.00);
+					message = "Same career! Paid yourself.";
+				}
+				else {
+					// Check if other players match the blue card
+					for (Player e : players)
+						if (e.getCareer().contentEquals("DOCTOR")) {
+							isCase2 = true;
+							matchedPlayerTurn = e.getPlayerNumber();
+						}
+					
+					payment = 10000.00;
+					
+					
+					if (isCase2) { // Case 2 : There is another player matching the blue card
+						players[matchedPlayerTurn].addMoneyBalance(payment);
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Player" + (matchedPlayerTurn + 1) + ".";
+					}
+					
+					else { // Case 3 : No matching occurred. Pay to Bank.
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Bank [" + typeOfCard;
+					}
+				}
+
+			} break;
+			case 4 : // COMPUTER REPAIR
 			{	// pay $5000 if random number is even, $10000 otherwise
-				int nNum;
-				nNum = rand.nextInt();
-				if(nNum % 2 == 0)
-					players.get(turn).reduceMoneyBalance(5000.00);
-				else
-					players.get(turn).reduceMoneyBalance(10000.00);
+				if (players[turn].getCareer().contentEquals("COMPUTER CONSULTANT")) { // Case 1 : Current player matches blue card
+					players[turn].addMoneyBalance(15000.00);
+					message = "Same career! Paid yourself.";
+				}
+				else {
+					// Check if other players match the blue card
+					for (Player e : players)
+						if (e.getCareer().contentEquals("COMPUTER CONSULTANT")) {
+							isCase2 = true;
+							matchedPlayerTurn = e.getPlayerNumber();
+						}
+					
+					payment = (nRand % 2 == 0) ? 5000.00 : 10000.00;
+					
+					
+					if (isCase2) { // Case 2 : There is another player matching the blue card
+						players[matchedPlayerTurn].addMoneyBalance(payment);
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Player" + (matchedPlayerTurn + 1) + ".";
+					}
+					
+					else { // Case 3 : No matching occurred. Pay to Bank.
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Bank [" + typeOfCard;
+					}
+				}
 			}
-			case 5 : 
+			case 5 : // WORLD CUP
 			{	
-				// pay $5000 x number of players
-				players.get(turn).reduceMoneyBalance(players.size() * 5000.00);
-				break;
+				if (players[turn].getCareer().contentEquals("ATHLETE")) { // Case 1 : Current player matches blue card
+					players[turn].addMoneyBalance(15000.00);
+					message = "Same career! Paid yourself.";
+				}
+				else {
+					// Check if other players match the blue card
+					for (Player e : players)
+						if (e.getCareer().contentEquals("ATHLETE")) {
+							isCase2 = true;
+							matchedPlayerTurn = e.getPlayerNumber();
+						}
+					
+					payment = players.length * 5000.00;
+					
+					
+					if (isCase2) { // Case 2 : There is another player matching the blue card
+						players[matchedPlayerTurn].addMoneyBalance(payment);
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Player" + (matchedPlayerTurn + 1) + ".";
+					}
+					
+					else { // Case 3 : No matching occurred. Pay to Bank.
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Bank [" + typeOfCard;
+					}
+				}
 			}
-			case 6 : 
+			case 6 : // F1 RACE
 			{	
-				// pay 10% of current salary
-				players.get(turn).reduceMoneyBalance(players.get(turn).getSalary() * 0.10);
-				break;
+				if (players[turn].getCareer().contentEquals("RACECAR DRIVER")) { // Case 1 : Current player matches blue card
+					players[turn].addMoneyBalance(15000.00);
+					message = "Same career! Paid yourself.";
+				}
+				else {
+					// Check if other players match the blue card
+					for (Player e : players)
+						if (e.getCareer().contentEquals("RACECAR DRIVER")) {
+							isCase2 = true;
+							matchedPlayerTurn = e.getPlayerNumber();
+						}
+					
+					payment = players[turn].getSalary() * 0.10;
+					
+					
+					if (isCase2) { // Case 2 : There is another player matching the blue card
+						players[matchedPlayerTurn].addMoneyBalance(payment);
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Player" + (matchedPlayerTurn + 1) + ".";
+					}
+					
+					else { // Case 3 : No matching occurred. Pay to Bank.
+						players[turn].reduceMoneyBalance(payment);
+						message = "Paid to Bank [" + typeOfCard;
+					}
+				}
 			}
-		
 		}
 		
+		return message;
 	}
+		
+
 	
 	
 }

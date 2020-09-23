@@ -8,6 +8,7 @@ import java.util.Random;
 
 import Model.ActionCard;
 import Model.Cards;
+import Model.HouseCard;
 import Model.MainGame;
 import Model.Player;
 import Model.SalaryCard;
@@ -197,14 +198,15 @@ public class BoardGUI {
 		panelSouthWest.add(actionCard);
 		
 		chooseHouseBox = new JComboBox<String>(); 
-		chooseHouseBox.addItem("SHACK");
-		chooseHouseBox.addItem("SINGLE-STOREY HOME");
-		chooseHouseBox.addItem("CONTRY COTTAGE");
-		chooseHouseBox.addItem("DUTCH COLONIAL");
-		chooseHouseBox.addItem("BEACH HOUSE");
-		chooseHouseBox.addItem("FARMHOUSE");
-		chooseHouseBox.addItem("TURDOR");
-		chooseHouseBox.addItem("VICTORIAN");
+		chooseHouseBox.addItem("Split-Level");
+		chooseHouseBox.addItem("Mobile Home");
+		chooseHouseBox.addItem("Log Cabin");
+		chooseHouseBox.addItem("Country Cottage");
+		chooseHouseBox.addItem("Dutch Colonial");
+		chooseHouseBox.addItem("Beach House");
+		chooseHouseBox.addItem("Farmhouse");
+		chooseHouseBox.addItem("Tudor");
+		chooseHouseBox.addItem("Victorian");
 		chooseHouseBox.setBounds(525, 50, 155, 20);
 		panelSouthWest.add(chooseHouseBox);
 		
@@ -260,7 +262,7 @@ public class BoardGUI {
 		confirmCardButton.setBounds(300, 60, 175, 20);
 		panelSouthEast.add(confirmCardButton);
 		
-		changeCareerButton = new JButton("Change Career");
+		changeCareerButton = new JButton("New Career & Salary");
 		changeCareerButton.setBounds(300, 110, 175, 20);
 		panelSouthEast.add(changeCareerButton);
 		
@@ -291,11 +293,11 @@ public class BoardGUI {
 	}
 	
 	private void instantiateControlPanelNorth() {
-		player1Title = new JLabel("Player 1");
+		player1Title = new JLabel("Player 1: ");
 		player1Title.setForeground(Color.RED);
-		player2Title = new JLabel("Player 2");
+		player2Title = new JLabel("Player 2: ");
 		player2Title.setForeground(Color.CYAN);
-		player3Title = new JLabel("Player 3");
+		player3Title = new JLabel("Player 3: ");
 		player3Title.setForeground(Color.YELLOW);
 		
 		balance = new JLabel[3];
@@ -319,6 +321,11 @@ public class BoardGUI {
 	 */
 	public void updatePlayerStats() {
 		Player[] tempPlayers = MainGame.getPlayers();
+		player1Title.setText("Player 1: " + tempPlayers[0].getCareer());
+		player2Title.setText("Player 2: " + tempPlayers[1].getCareer());
+		if (tempPlayers.length == 3) {
+			player3Title.setText("Player 3: " + tempPlayers[2].getCareer());
+		}
 		
 		balance[0].setText("Balance: $" + tempPlayers[0].getMoneyBalance());
 		loan[0].setText("Loan: $" + tempPlayers[0].getMoneyLoan());
@@ -466,6 +473,7 @@ public class BoardGUI {
 	 * Allows the user to "throw a dice".
 	 */
 	public void setReadyToMove() {
+		updatePlayerStats();
 		// SW
 		careerCard.setIcon(careerCardBack);
 		salaryCard.setIcon(salaryCardBack);
@@ -486,6 +494,7 @@ public class BoardGUI {
 		
 		chooseCardBox.setEnabled(false);
 		confirmCardButton.setEnabled(false);
+		confirmCardButton.setText("Confirm Card");
 		changeCareerButton.setEnabled(false);
 		choosePathBox.setEnabled(false);
 		changePathButton.setEnabled(false);
@@ -499,10 +508,12 @@ public class BoardGUI {
 		proceedButton.setEnabled(true);
 	}
 	
+	
 	/**
 	 * Allows the player to hand over the next turn
 	 */
 	public void setReadyToHandoverTurn() {
+		updatePlayerStats();
 		// SW
 		chooseHouseBox.setEnabled(false);
 		buyHouseButton.setEnabled(false);
@@ -635,7 +646,7 @@ public class BoardGUI {
 		changePathButton.setEnabled(false);
 		
 		messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>Graduated!<br/> </html>");
-		proceedButton.setText("Get a Turn & Move!!");
+		proceedButton.setText("Get a Turn & Move!");
 		proceedButton.setEnabled(true);
 	}
 	
@@ -709,6 +720,327 @@ public class BoardGUI {
 		proceedButton.setEnabled(true);
 	}
 	
+	/**
+	 * Show career cards drawn, allow user to choose career card (College Career Choice magenta event)
+	 * @param cardsDrawn [0] & [1] - Career cards
+	 */
+	public void setMagentaSpaceLanded_CollegeCareerChoice_Career(ArrayList<Cards> cardsDrawn) {
+		// SW
+		careerCard.setIcon(careerCardFront);
+		salaryCard.setIcon(salaryCardBack);
+		blueCard.setIcon(blueCardBack);
+		actionCard.setIcon(actionCardBack);
+		
+		chooseHouseBox.setEnabled(false);
+		buyHouseButton.setEnabled(false);
+		chooseStartPathBox.setEnabled(false);
+		startButton.setEnabled(false);
+		
+		
+		// SE
+		chooseCollectFromBox.setEnabled(false);
+		collectButton.setEnabled(false);
+		choosePayToBox.setEnabled(false);
+		payButton.setEnabled(false);
+		
+		chooseCardBox.setEnabled(true);
+		chooseCardBox.removeAllItems();
+		chooseCardBox.addItem(cardsDrawn.get(0).getTypeOfCard());
+		chooseCardBox.addItem(cardsDrawn.get(1).getTypeOfCard());
+		confirmCardButton.setEnabled(true);
+		confirmCardButton.setText("Confirm Career Card");
+		changeCareerButton.setEnabled(false);
+		choosePathBox.setEnabled(false);
+		changePathButton.setEnabled(false);
+		
+		messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>Career cards:<br/>1. " + cardsDrawn.get(0).getTypeOfCard() 
+			+ "<br/>2. " + cardsDrawn.get(1).getTypeOfCard() + "</html>");
+		proceedButton.setText("Next Turn!");
+		proceedButton.setEnabled(false);
+	}
+	
+	/**
+	 * Show salary cards drawn, allow user to choose Salary Card (College Career Choice magenta event)
+	 * @param cardsDrawn [0] & [1] - Salary cards
+	 */
+	public void setMagentaSpaceLanded_CollegeCareerChoice_Salary(ArrayList<Cards> cardsDrawn) {
+		updatePlayerStats();
+		// SW
+		careerCard.setIcon(careerCardBack);
+		salaryCard.setIcon(salaryCardFront);
+		blueCard.setIcon(blueCardBack);
+		actionCard.setIcon(actionCardBack);
+		
+		chooseHouseBox.setEnabled(false);
+		buyHouseButton.setEnabled(false);
+		chooseStartPathBox.setEnabled(false);
+		startButton.setEnabled(false);
+		
+		
+		// SE
+		chooseCollectFromBox.setEnabled(false);
+		collectButton.setEnabled(false);
+		choosePayToBox.setEnabled(false);
+		payButton.setEnabled(false);
+		
+		chooseCardBox.setEnabled(true);
+		chooseCardBox.removeAllItems();
+		chooseCardBox.addItem(((SalaryCard)cardsDrawn.get(0)).getSalaryString());
+		chooseCardBox.addItem(((SalaryCard)cardsDrawn.get(1)).getSalaryString());
+		confirmCardButton.setEnabled(true);
+		confirmCardButton.setText("Confirm Salary Card");
+		changeCareerButton.setEnabled(false);
+		choosePathBox.setEnabled(false);
+		changePathButton.setEnabled(false);
+		
+		messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>Salary cards income:<br/>1. " + ((SalaryCard)cardsDrawn.get(0)).getSalaryString() 
+			+ "<br/>2. " + ((SalaryCard)cardsDrawn.get(1)).getSalaryString() + "</html>");
+		proceedButton.setText("Next Turn!");
+		proceedButton.setEnabled(false);
+	}
+	
+	public void setMagentaSpaceLanded_Junction() {
+		updatePlayerStats();
+		// SW
+		careerCard.setIcon(careerCardBack);
+		salaryCard.setIcon(salaryCardBack);
+		blueCard.setIcon(blueCardBack);
+		actionCard.setIcon(actionCardBack);
+		
+		chooseHouseBox.setEnabled(false);
+		buyHouseButton.setEnabled(false);
+		chooseStartPathBox.setEnabled(false);
+		startButton.setEnabled(false);
+		
+		// SE
+		chooseCollectFromBox.setEnabled(false);
+		collectButton.setEnabled(false);
+		choosePayToBox.setEnabled(false);
+		payButton.setEnabled(false);
+		
+		chooseCardBox.setEnabled(false);
+		confirmCardButton.setEnabled(false);
+		changeCareerButton.setEnabled(false);
+		choosePathBox.setEnabled(true);
+		changePathButton.setEnabled(true);
+		if (MainGame.getCurrentPlayer().getMoneyLoan() != 0)
+			payLoanButton.setEnabled(true);
+		else
+			payLoanButton.setEnabled(false);
+		
+		messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>Choose a New Path!</html>");
+		proceedButton.setText("Get a Turn & Move!");
+		proceedButton.setEnabled(false);
+	}
+	
+	/**
+	 * Allow user to confirm or reject change of career and salary (Job Search event)
+	 * @param cardsDrawn the cards drawn upon landing on Job Search
+	 */
+	public void setMagentaSpaceLanded_JobSearch(ArrayList<Cards> cardsDrawn) {
+		updatePlayerStats();
+		// SW
+		careerCard.setIcon(careerCardFront);
+		salaryCard.setIcon(salaryCardFront);
+		blueCard.setIcon(blueCardBack);
+		actionCard.setIcon(actionCardBack);
+		
+		chooseHouseBox.setEnabled(false);
+		buyHouseButton.setEnabled(false);
+		chooseStartPathBox.setEnabled(false);
+		startButton.setEnabled(false);
+		
+		// SE
+		chooseCollectFromBox.setEnabled(false);
+		collectButton.setEnabled(false);
+		choosePayToBox.setEnabled(false);
+		payButton.setEnabled(false);
+		
+		chooseCardBox.setEnabled(false);
+		confirmCardButton.setEnabled(true);
+		confirmCardButton.setText("Reject");
+		changeCareerButton.setEnabled(true);
+		choosePathBox.setEnabled(false);
+		changePathButton.setEnabled(false);
+		if (MainGame.getCurrentPlayer().getMoneyLoan() != 0)
+			payLoanButton.setEnabled(true);
+		else
+			payLoanButton.setEnabled(false);
+		
+		messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>"
+				+ "Career drawn: " + cardsDrawn.get(0).getTypeOfCard()
+				+ "<br/>Salary: "+ ((SalaryCard)cardsDrawn.get(1)).getSalary() 
+				+ "<br/>Switch to these cards?" + "</html>");
+		proceedButton.setText("Get a Turn & Move!");
+		proceedButton.setEnabled(false);
+	}
+	
+	public void setMagentaSpaceLanded_BuyHouse(ArrayList<HouseCard> houseCards) {
+		updatePlayerStats();
+		// SW
+		careerCard.setIcon(careerCardBack);
+		salaryCard.setIcon(salaryCardBack);
+		blueCard.setIcon(blueCardBack);
+		actionCard.setIcon(actionCardBack);
+		
+		chooseHouseBox.setEnabled(true); // enable house box, remove selections with ownership
+		for (HouseCard e : houseCards)
+			if (e.hasOwner())
+				chooseHouseBox.removeItem(e.getHouseType());
+		buyHouseButton.setEnabled(true);
+		
+		chooseStartPathBox.setEnabled(false);
+		startButton.setEnabled(false);
+		
+		// SE
+		chooseCollectFromBox.setEnabled(false);
+		collectButton.setEnabled(false);
+		choosePayToBox.setEnabled(false);
+		payButton.setEnabled(false);
+				
+		chooseCardBox.setEnabled(false);
+		confirmCardButton.setEnabled(false);
+		confirmCardButton.setText("Confirm Card");
+		changeCareerButton.setEnabled(false);
+		choosePathBox.setEnabled(false);
+		changePathButton.setEnabled(false);
+		if (MainGame.getCurrentPlayer().getMoneyLoan() != 0)
+			payLoanButton.setEnabled(true);
+		else
+			payLoanButton.setEnabled(false);
+		
+		messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>Buy a House!</html>");
+		proceedButton.setText("Get a Turn & Move!");
+		proceedButton.setEnabled(false);
+	}
+
+	public void setMagentaSpaceLanded_Baby(int nVal) {
+		updatePlayerStats();
+		// SW
+		careerCard.setIcon(careerCardBack);
+		salaryCard.setIcon(salaryCardBack);
+		blueCard.setIcon(blueCardBack);
+		actionCard.setIcon(actionCardBack);
+		
+		chooseHouseBox.setEnabled(false);
+		buyHouseButton.setEnabled(false);
+		
+		chooseStartPathBox.setEnabled(false);
+		startButton.setEnabled(false);
+		
+		// SE
+		chooseCollectFromBox.setEnabled(false);
+		collectButton.setEnabled(false);
+		choosePayToBox.setEnabled(false);
+		payButton.setEnabled(false);
+				
+		chooseCardBox.setEnabled(false);
+		confirmCardButton.setEnabled(false);
+		confirmCardButton.setText("Confirm Card");
+		changeCareerButton.setEnabled(false);
+		choosePathBox.setEnabled(false);
+		changePathButton.setEnabled(false);
+		if (MainGame.getCurrentPlayer().getMoneyLoan() != 0)
+			payLoanButton.setEnabled(true);
+		else
+			payLoanButton.setEnabled(false);
+		
+		if (nVal % 2 == 0) // Even, player had twins
+			messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>Have Twins! Collected $10000.00<br/> from other players!</html>");
+		else
+			messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>Have Baby! Collected $5000.00<br/> from other players!</html>");
+		
+		proceedButton.setText("Get a Turn & Move!");
+		proceedButton.setEnabled(true);
+	}
+	
+	public void setBlueSpaceLanded(String message) {
+		updatePlayerStats();
+		// SW
+		chooseHouseBox.setEnabled(false);
+		buyHouseButton.setEnabled(false);
+		chooseStartPathBox.setEnabled(false);
+		startButton.setEnabled(false);
+		
+		
+		// SE
+		chooseCollectFromBox.setEnabled(false);
+		collectButton.setEnabled(false);
+		choosePayToBox.setEnabled(false);
+		payButton.setEnabled(false);
+		
+		chooseCardBox.setEnabled(false);
+		confirmCardButton.setEnabled(false);
+		changeCareerButton.setEnabled(false);
+		choosePathBox.setEnabled(false);
+		changePathButton.setEnabled(false);
+		
+		messageLabel.setText("<html>" + message + "</html>");
+		proceedButton.setText("Next Turn!");
+		proceedButton.setEnabled(true);
+	}
+
+	public void setGreenSpaceLanded(int spaceID) {
+		updatePlayerStats();
+		// SW
+		chooseHouseBox.setEnabled(false);
+		buyHouseButton.setEnabled(false);
+		chooseStartPathBox.setEnabled(false);
+		startButton.setEnabled(false);
+		
+		
+		// SE
+		chooseCollectFromBox.setEnabled(false);
+		collectButton.setEnabled(false);
+		choosePayToBox.setEnabled(false);
+		payButton.setEnabled(false);
+		
+		chooseCardBox.setEnabled(false);
+		confirmCardButton.setEnabled(false);
+		changeCareerButton.setEnabled(false);
+		choosePathBox.setEnabled(false);
+		changePathButton.setEnabled(false);
+		String message = (spaceID == 0) ? "Collected salary from bank." : "Pay Raise landed.";
+		messageLabel.setText("<html>" + message + "</html>");
+		proceedButton.setText("Next Turn!");
+		proceedButton.setEnabled(true);
+	}
+	
+	public void endGame(int playerNumberWinner) {
+		updatePlayerStats();
+		// SW
+		careerCard.setIcon(careerCardBack);
+		salaryCard.setIcon(salaryCardBack);
+		blueCard.setIcon(blueCardBack);
+		actionCard.setIcon(actionCardBack);
+		
+		chooseHouseBox.setEnabled(false);
+		buyHouseButton.setEnabled(false);
+		chooseStartPathBox.setEnabled(false);
+		startButton.setEnabled(false);
+		
+		// SE
+		chooseCollectFromBox.setEnabled(false);
+		collectButton.setEnabled(false);
+		choosePayToBox.setEnabled(false);
+		payButton.setEnabled(false);
+		
+		chooseCardBox.setEnabled(false);
+		confirmCardButton.setEnabled(false);
+		changeCareerButton.setEnabled(false);
+		choosePathBox.setEnabled(false);
+		changePathButton.setEnabled(false);
+		payLoanButton.setEnabled(false);
+		
+		if (playerNumberWinner == -1) // Tie
+			messageLabel.setText("<html>END GAME! TIE! Too BAD!!</html>");
+		else
+			messageLabel.setText("<html>END GAME! Winner:</br>" + "Player " + (playerNumberWinner+1) + "!</html>");
+		proceedButton.setText("Get a Turn & Move!");
+		proceedButton.setEnabled(false);
+	}
+	
+	
 	public void setListener(ActionListener listener) {
 		chooseHouseBox.addActionListener(listener);
 		chooseStartPathBox.addActionListener(listener);
@@ -728,7 +1060,8 @@ public class BoardGUI {
 		proceedButton.addActionListener(listener);
 	}
 	
-	// @stackoverflow https://stackoverflow.com/questions/6714045/how-to-resize-jlabel-imageicon
+	
+	// Reference: https://stackoverflow.com/questions/6714045/how-to-resize-jlabel-imageicon
 	public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
 		int nw = icon.getIconWidth();
         int nh = icon.getIconHeight();
@@ -749,14 +1082,25 @@ public class BoardGUI {
     }
 	
 	/**
-	 * Gets the chosen starting path that the player has selected in the dropdown box.
-	 * @return the chosen starting path (1 - Career, 2 - College)
+	 * Get chosen starting path that the player has selected in the dropdown box.
+	 * @return the chosen starting path (0 - Career, 1 - College)
 	 */
 	public int getChosenStartingPath() {
 		if (chooseStartPathBox.getSelectedIndex() == 0) // Career
 			return 1;
 		else // College
 			return 2;
+	}
+	
+	/**
+	 * Get chosen junction path that the player has selected in the dropdown box 
+	 * @return chosen junction path (3 - Career, 4 - Family)
+	 */
+	public int getChosenJunctionPath() {
+		if (choosePathBox.getSelectedIndex() == 0) // Career
+			return 3;
+		else // Family
+			return 4;
 	}
 	
 	/**
@@ -768,5 +1112,25 @@ public class BoardGUI {
 			return Integer.parseInt((String) choosePayToBox.getSelectedItem());
 		else
 			return Integer.parseInt((String) chooseCollectFromBox.getSelectedItem());
+	}
+
+	/**
+	 * Get chosen career card 
+	 * @return the name of the career card (type of card)
+	 */
+	public String getChosenCareerCard() {
+		return (String) chooseCardBox.getSelectedItem();
+	}
+
+	/**
+	 * Get the chosen salary card
+	 * @return the String representation of the salary amount of the chosen salary card
+	 */
+	public String getChosenSalaryCard() {
+		return (String) chooseCardBox.getSelectedItem();
+	}
+	
+	public String getChosenHouseType() {
+		return (String) chooseHouseBox.getSelectedItem();
 	}
 }

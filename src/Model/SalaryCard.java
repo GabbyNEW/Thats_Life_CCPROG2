@@ -37,6 +37,10 @@ public class SalaryCard extends Cards {
 		return salary;
 	}
 	
+	public String getSalaryString() {
+		return Double.toString(salary);
+	}
+	
 	public double getTaxDue() {
 		return taxDue;
 	}

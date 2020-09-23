@@ -47,6 +47,17 @@ public class DeckOfCareerCards {
 		head = 6;
 	}
 	
+	@SuppressWarnings("unlikely-arg-type")
+	public static void revokeOwnership(String typeOfCard) {
+		for (CareerCard e : careerCards)
+			if (e.equals(typeOfCard)) {
+				e.setHasOwner(false);
+				System.out.println(e.getTypeOfCard() + ": Revoked ownership");
+			}
+		
+		shuffle();
+	}
+	
 	/**
 	 * Display on the terminal all cards generated on a given deck.
 	 * @param deck the deck to show all cards

@@ -20,6 +20,7 @@ public class Player {
 	
 	private boolean degree;
 	private boolean married;
+	private HouseCard houseCardOwned;
 	private int numberOfOffsprings;
 	
 	private int[] currentLocation; // [0] - x, [1] - y
@@ -71,7 +72,6 @@ public class Player {
 		moneyLoan += 20000.00;
 		moneyBalance += 20000.00;
 		moneyLoanInterest += 5000.00;
-		System.out.println("Warning! A loan added to a player. Make sure to pay it back.");
 		System.out.println("Updated loan and interest for a player total is now " + (this.moneyLoan + this.moneyLoanInterest));
 	}
 	
@@ -119,6 +119,29 @@ public class Player {
 	}
 	
 	/**
+	 * Assigns the player a new career
+	 * @param careerCard Career card
+	 */
+	public void setNewCareer(CareerCard careerCard) {
+		career = careerCard.getTypeOfCard();
+		currentPayRaise = 0;
+		maxPayRaise = careerCard.getPayRaise();
+		
+		System.out.println("Player " + playerNumber + " Career: " + career);
+	}
+
+	/**
+	 * Assigns the player a new career and salary
+	 * @param salaryCard Salary card
+	 */
+	public void setNewCareer(SalaryCard salaryCard) {
+		salary = salaryCard.getSalary();
+		taxDue = salaryCard.getTaxDue();
+		
+		System.out.println("Player " + playerNumber + " Salary: " + salary);
+	}
+	
+	/**
 	 * Sets a given player's career.
 	 * @param career chosen career
 	 */
@@ -159,12 +182,24 @@ public class Player {
 		degree = status;
 	}
 	
+	public void setHouse(HouseCard houseCard) {
+		houseCardOwned = houseCard;
+	}
+	
+	public void setBabyAmount(int amount) {
+		this.numberOfOffsprings = amount;
+	}
+	
 	public void incrementCurrentPayRaise() {
 		currentPayRaise++;
 	}
 	
 	public void setMaxPayRaise(int amount) {
 		maxPayRaise = amount;
+	}
+	
+	public void setReachedEnd(boolean status) {
+		endReached = status;
 	}
 	
 	public void updateCurrentLocation(int[] coordinate) {
@@ -180,6 +215,10 @@ public class Player {
 		return this.career;
 	}
 	
+	/**
+	 * Returns the equivalent player number (0 - 2)
+	 * @return player number from 0 to 2
+	 */
 	public int getPlayerNumber() {
 		return playerNumber;
 	}
@@ -229,8 +268,16 @@ public class Player {
 		return currentPayRaise;
 	}
 	
+	public int getBabyAmount() {
+		return this.numberOfOffsprings;
+	}
+	
 	public int getMaxPayRaise() {
 		return maxPayRaise;
+	}
+	
+	public HouseCard getHouseCard() {
+		return this.houseCardOwned;
 	}
 	
 	/**

@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class GreenSpaces extends Spaces {
 	
-	private Random rand; 
+	private static Random rand; 
 	
 	/**
 	 * 
@@ -41,30 +41,30 @@ public class GreenSpaces extends Spaces {
 	public static int getSpaceID(int[] e) {
 		 if ((e[0] == 12 && e[1] == 14) || (e[0] == 7 && e[1] == 19)) // Pay Day
 			 return 0;
-		 else if ((e[0] == 5 && e[1] == 16) || (e[0] == 9 && e[1] == 16)) // Pay Day
+		 else if ((e[0] == 5 && e[1] == 16) || (e[0] == 9 && e[1] == 16)) // Pay Raise
 			 return 1;
 		 else
 			 return -1;
 	}
 	
-	public void doAction(Player player, int spaceID) {
+	public static void doAction(Player player, int spaceID) {
 		
 		switch(spaceID) {
 			case 0 : { // Pay Day
-				if (!(player.hasReachedMaxPayraise())) {
-					player.addMoneyBalance(player.getSalary());
-					player.incrementCurrentPayRaise();
-				}
+				player.addMoneyBalance(player.getSalary());
+				player.incrementCurrentPayRaise();
 				
 			} break;
 			case 1 : { // Pay Raise, salary raise of up to $50000.00
 				if (!(player.hasReachedMaxPayraise())) {
-					int num = rand.nextInt(6);
+					int num = rand.nextInt(3);
+					num++;
 					double amount = 10000.00 * num;
 					
 					player.setSalary(player.getSalary() + amount);
 					player.addMoneyBalance(player.getSalary());
 					player.setTaxDue(player.getTaxDue() + 2000.00);
+					player.incrementCurrentPayRaise();
 				}
 			} break;
 		}

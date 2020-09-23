@@ -18,12 +18,14 @@ public class MainGame {
 	private static DeckOfBlueCards blueCards;
 	private static DeckOfCareerCards careerCards;
 	private static DeckOfSalaryCards salaryCards;
-	private static ArrayList<HouseCard> houseCards;
+	public static ArrayList<HouseCard> houseCards;
 	
 	private static int turn; // value 0 for player 1; value 1 for player 2 etc.
 	private static int randomMoveNumber; // value generated when a player "throws the dice" during the game
 	private static int numberOfMoves; // 1 - 10
 
+	private static int trackWinner;
+	
 	private static Scanner input = new Scanner(System.in);
 	private static Random rand = new Random();
 	
@@ -58,7 +60,7 @@ public class MainGame {
 	
 	public void throwDice() {
 		while (numberOfMoves == 0) // Prevent 0, make sure all previous moves have been used up before this is called 
-			numberOfMoves = rand.nextInt(8); // (TODO reset to 11) Throw a dice (1-10)
+			numberOfMoves = rand.nextInt(11); // (TODO reset to 11) Throw a dice (1-10)
 		System.out.println("Move: " + numberOfMoves);
 	}
 	
@@ -113,150 +115,188 @@ public class MainGame {
 		}
 		
 		else if (players[turn].getLifePath() == 2) { //  College path BEFORE Junction
-			while ((newLocation[0] == 0 && newLocation[1] >= 0) && (newLocation[0] == 0 && newLocation[1] < 11) && numberOfMoves != 0) { // [0,0] – [11,0]
+			while ((newLocation[0] == 0 && newLocation[1] >= 0) && (newLocation[0] == 0 && newLocation[1] < 11) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [0,0] – [11,0]
 				newLocation[1]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 0 && newLocation[1] == 11) && (newLocation[0] < 2 && newLocation[1] == 11) && numberOfMoves != 0) { // [0,11] – [2,11]
+			while ((newLocation[0] >= 0 && newLocation[1] == 11) && (newLocation[0] < 2 && newLocation[1] == 11) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [0,11] – [2,11]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 2 && newLocation[1] <= 11) && (newLocation[0] == 2 && newLocation[1] > 3) && numberOfMoves != 0) { // [2,11] – [2,3]
+			while ((newLocation[0] == 2 && newLocation[1] <= 11) && (newLocation[0] == 2 && newLocation[1] > 3) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [2,11] – [2,3]
 				newLocation[1]--;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 2 && newLocation[1] == 3) && (newLocation[0] < 3 && newLocation[1] == 3) && numberOfMoves != 0) { // [2,3] – [3,3]
+			while ((newLocation[0] >= 2 && newLocation[1] == 3) && (newLocation[0] < 3 && newLocation[1] == 3) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [2,3] – [3,3]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 3 && newLocation[1] >= 3) && (newLocation[0] == 3 && newLocation[1] < 10) && numberOfMoves != 0) { // [3,3] – [3,10]
+			while ((newLocation[0] == 3 && newLocation[1] >= 3) && (newLocation[0] == 3 && newLocation[1] < 10) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [3,3] – [3,10]
 				newLocation[1]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 3 && newLocation[1] == 10) && (newLocation[0] < 4 && newLocation[1] == 10) && numberOfMoves != 0) { // [3,10] – [4,10]
+			while ((newLocation[0] >= 3 && newLocation[1] == 10) && (newLocation[0] < 4 && newLocation[1] == 10) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [3,10] – [4,10]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 4 && newLocation[1] <= 10) && (newLocation[0] == 4 && newLocation[1] > 7) && numberOfMoves != 0) { // [4,10] – [4,7]
+			while ((newLocation[0] == 4 && newLocation[1] <= 10) && (newLocation[0] == 4 && newLocation[1] > 7) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [4,10] – [4,7]
 				newLocation[1]--;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 4 && newLocation[1] == 7) && (newLocation[0] < 5 && newLocation[1] == 7) && numberOfMoves != 0) { // [4,7] – [5,7]
+			while ((newLocation[0] >= 4 && newLocation[1] == 7) && (newLocation[0] < 5 && newLocation[1] == 7) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [4,7] – [5,7]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
 		}
 		
 		else if (players[turn].getLifePath() == 3) { //  Career path AFTER Junction
-			while ((newLocation[0] == 5 && newLocation[1] >= 7) && (newLocation[0] == 5 && newLocation[1] < 13) && numberOfMoves != 0) { // [5,7] – [5,13]
+			while ((newLocation[0] == 5 && newLocation[1] >= 7) && (newLocation[0] == 5 && newLocation[1] < 13) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [5,7] – [5,13]
 				newLocation[1]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] <= 5 && newLocation[1] == 13) && (newLocation[0] > 1 && newLocation[1] == 13) && numberOfMoves != 0) { // [5,13] – [1,13]
+			while ((newLocation[0] <= 5 && newLocation[1] == 13) && (newLocation[0] > 1 && newLocation[1] == 13) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [5,13] – [1,13]
 				newLocation[0]--;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 1 && newLocation[1] >= 13) && (newLocation[0] == 1 && newLocation[1] < 16) && numberOfMoves != 0) { // [1,13] – [1,16]
+			while ((newLocation[0] == 1 && newLocation[1] >= 13) && (newLocation[0] == 1 && newLocation[1] < 16) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [1,13] – [1,16]
 				newLocation[1]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 1 && newLocation[1] == 16) && (newLocation[0] < 6 && newLocation[1] == 16) && numberOfMoves != 0) { // [1,16] – [6,16]
+			while ((newLocation[0] >= 1 && newLocation[1] == 16) && (newLocation[0] < 6 && newLocation[1] == 16) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [1,16] – [6,16]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 6 && newLocation[1] >= 16) && (newLocation[0] == 6 && newLocation[1] < 19) && numberOfMoves != 0) { // [6,16] – [6,19]
+			while ((newLocation[0] == 6 && newLocation[1] >= 16) && (newLocation[0] == 6 && newLocation[1] < 19) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [6,16] – [6,19]
 				newLocation[1]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 6 && newLocation[1] == 19) && (newLocation[0] < 9 && newLocation[1] == 19) && numberOfMoves != 0) { // [6,19] – [9,19]
+			while ((newLocation[0] >= 6 && newLocation[1] == 19) && (newLocation[0] < 9 && newLocation[1] == 19)
+					& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [6,19] – [9,19]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 9 && newLocation[1] <= 19) && (newLocation[0] == 9 && newLocation[1] > 15) && numberOfMoves != 0) { // [9,19] – [9,15]
+			while ((newLocation[0] == 9 && newLocation[1] <= 19) && (newLocation[0] == 9 && newLocation[1] > 15) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [9,19] – [9,15]
 				newLocation[1]--;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 9 && newLocation[1] == 15) && (newLocation[0] < 10 && newLocation[1] == 15) && numberOfMoves != 0) { // [9,15] – [10,15]
+			while ((newLocation[0] >= 9 && newLocation[1] == 15) && (newLocation[0] < 10 && newLocation[1] == 15) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [9,15] – [10,15]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 10 && newLocation[1] <= 15) && (newLocation[0] == 10 && newLocation[1] > 14) && numberOfMoves != 0) { // [10,15] – [10,14]
+			while ((newLocation[0] == 10 && newLocation[1] <= 15) && (newLocation[0] == 10 && newLocation[1] > 14) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [10,15] – [10,14]
 				newLocation[1]--;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 10 && newLocation[1] == 14) && (newLocation[0] < 12 && newLocation[1] == 14) && numberOfMoves != 0) { // [10,14] – [12,14]
+			while ((newLocation[0] >= 10 && newLocation[1] == 14) && (newLocation[0] < 12 && newLocation[1] == 14) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [10,14] – [12,14]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 12 && newLocation[1] >= 14) && (newLocation[0] == 12 && newLocation[1] < 19) && numberOfMoves != 0) { // [12,14] – [12,19]
+			while ((newLocation[0] == 12 && newLocation[1] >= 14) && (newLocation[0] == 12 && newLocation[1] < 19) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [12,14] – [12,19]
 				newLocation[1]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 12 && newLocation[1] == 19) && (newLocation[0] >= 12 && newLocation[1] == 19) && numberOfMoves != 0) { // [12,19] – [15+,19] END SPACE
+			while ((newLocation[0] >= 12 && newLocation[1] == 19) && (newLocation[0] >= 12 && newLocation[1] == 19) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [12,19] – [15+,19] END SPACE
 				newLocation[0]++; // may move past the endspace
 				numberOfMoves--;
 			}
 		}
 		
 		else if (players[turn].getLifePath() == 4) { //  Family path AFTER Junction
-			while ((newLocation[0] == 5 && newLocation[1] >= 7) && (newLocation[0] == 5 && newLocation[1] < 9) && numberOfMoves != 0) { // [5,7] – [5,9]
+			while ((newLocation[0] == 5 && newLocation[1] >= 7) && (newLocation[0] == 5 && newLocation[1] < 9) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [5,7] – [5,9]
 				newLocation[1]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 5 && newLocation[1] == 9) && (newLocation[0] < 7 && newLocation[1] == 9) && numberOfMoves != 0) { // [5,9] – [7,9]
+			while ((newLocation[0] >= 5 && newLocation[1] == 9) && (newLocation[0] < 7 && newLocation[1] == 9) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [5,9] – [7,9]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 7 && newLocation[1] >= 9) && (newLocation[0] == 7 && newLocation[1] < 13) && numberOfMoves != 0) { // [7,9] – [7,13]
+			while ((newLocation[0] == 7 && newLocation[1] >= 9) && (newLocation[0] == 7 && newLocation[1] < 13) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [7,9] – [7,13]
 				newLocation[1]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 7 && newLocation[1] == 13) && (newLocation[0] < 9 && newLocation[1] == 13) && numberOfMoves != 0) { // [7,13] – [9,13]
+			while ((newLocation[0] >= 7 && newLocation[1] == 13) && (newLocation[0] < 9 && newLocation[1] == 13) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [7,13] – [9,13]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 9 && newLocation[1] <= 13) && (newLocation[0] == 9 && newLocation[1] > 12) && numberOfMoves != 0) { // [9,13] – [9,12]
+			while ((newLocation[0] == 9 && newLocation[1] <= 13) && (newLocation[0] == 9 && newLocation[1] > 12) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [9,13] – [9,12]
 				newLocation[1]--;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 9 && newLocation[1] == 12) && (newLocation[0] < 10 && newLocation[1] == 12) && numberOfMoves != 0) { // [9,12] – [10,12]
+			while ((newLocation[0] >= 9 && newLocation[1] == 12) && (newLocation[0] < 10 && newLocation[1] == 12) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [9,12] – [10,12]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 10 && newLocation[1] <= 12) && (newLocation[0] == 10 && newLocation[1] > 9) && numberOfMoves != 0) { // [10,12] – [10,9]
+			while ((newLocation[0] == 10 && newLocation[1] <= 12) && (newLocation[0] == 10 && newLocation[1] > 9) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [10,12] – [10,9]
 				newLocation[1]--;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 10 && newLocation[1] == 9) && (newLocation[0] < 12 && newLocation[1] == 9) && numberOfMoves != 0) { // [10,9] – [12,9]
+			while ((newLocation[0] >= 10 && newLocation[1] == 9) && (newLocation[0] < 12 && newLocation[1] == 9) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [10,9] – [12,9]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 12 && newLocation[1] <= 9) && (newLocation[0] == 12 && newLocation[1] > 1) && numberOfMoves != 0) { // [12,9] – [12,1]
+			while ((newLocation[0] == 12 && newLocation[1] <= 9) && (newLocation[0] == 12 && newLocation[1] > 1) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [12,9] – [12,1]
 				newLocation[1]--;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 12 && newLocation[1] == 1) && (newLocation[0] < 14 && newLocation[1] == 1) && numberOfMoves != 0) { // [12,1] – [14,1]
+			while ((newLocation[0] >= 12 && newLocation[1] == 1) && (newLocation[0] < 14 && newLocation[1] == 1) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [12,1] – [14,1]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 14 && newLocation[1] >= 1) && (newLocation[0] == 14 && newLocation[1] < 15) && numberOfMoves != 0) { // [14,1] – [14,15]
+			while ((newLocation[0] == 14 && newLocation[1] >= 1) && (newLocation[0] == 14 && newLocation[1] < 15) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [14,1] – [14,15]
 				newLocation[1]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] >= 14 && newLocation[1] == 15) && (newLocation[0] < 15 && newLocation[1] == 15) && numberOfMoves != 0) { // [14,15] – [15,15]
+			while ((newLocation[0] >= 14 && newLocation[1] == 15) && (newLocation[0] < 15 && newLocation[1] == 15) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [14,15] – [15,15]
 				newLocation[0]++;
 				numberOfMoves--;
 			}
-			while ((newLocation[0] == 15 && newLocation[1] >= 15) && (newLocation[0] == 15 && newLocation[1] >= 15) && numberOfMoves != 0) { // [15,15] – [15,19+] END
+			while ((newLocation[0] == 15 && newLocation[1] >= 15) && (newLocation[0] == 15 && newLocation[1] >= 15) 
+					&& numberOfMoves != 0 && Spaces.getSpaceType(newLocation) != 2) { // [15,15] – [15,19+] END
 				newLocation[1]++; // may move past the endspace
 				numberOfMoves--;
 			}
 		}
 		numberOfMoves = 0;
+		
+		if ((newLocation[0] >= 15 && newLocation[1] == 19) || (newLocation[0] == 15 && newLocation[1] >= 19)) {
+			players[turn].setReachedEnd(true);
+			newLocation[0] = 15;
+			newLocation[1] = 19;
+		}
 		// No more moves left, or if numberOfMoves != 0 assume player landed at Magenta space. Proceed to assign new location to the player.
 		players[turn].updateCurrentLocation(newLocation);
 		
-		// TODO add statement to set player end status to true if has moved on or past the end space located at [15,19]
 	}
 
 	/**
@@ -265,8 +305,10 @@ public class MainGame {
 	 * @return shifted coordinates after moving past the magenta space (if applicable), else no effect
 	 */
 	private int[] movePastMagentaSpaceLanded(int[] newLocation) {
+		System.out.println("Current location " + newLocation[0] + "," + newLocation[1]);
 		if (Spaces.getSpaceType(newLocation) == 2) { 
-			if (newLocation[0] == 3 && newLocation[1] == 7) // College Choice
+			System.out.println("Move out of magenta space " + newLocation[0] + "," + newLocation[1]);
+			if (newLocation[0] == 3 && newLocation[1] == 7) // College Career Choice
 				newLocation[1]++;
 			else if (newLocation[0] == 5 && newLocation[1] == 7) // Conjunction
 				newLocation[1]++;
@@ -282,16 +324,17 @@ public class MainGame {
 				newLocation[0]++;
 			else if (newLocation[0] == 8 && newLocation[1] == 3) // Get Married (2)
 				newLocation[0]--;
+			numberOfMoves--;
 		}
-		
-		numberOfMoves--;
+		System.out.println("Returned new location " + newLocation[0] + "," + newLocation[1]);
 		return newLocation;
 	}
 	
 	/**
-	 * Player takes one Career Card and Salary Card. 
+	 * Player takes one Career Card and Salary Card when the player chooses Career path at start.
 	 * @return ArrayList of cards: one career card[0] and one salary card[1]
 	 */
+	@SuppressWarnings("unlikely-arg-type")
 	public ArrayList<Cards> executeStartLifePathCareer() {
 		ArrayList<Cards> cardsDrawn = new ArrayList<Cards>();
 		Cards temp;
@@ -319,6 +362,9 @@ public class MainGame {
 		
 	}
 
+	/**
+	 * Player starts with loan upon choosing College path at start.
+	 */
 	public void executeStartLifePathCollegeCareer() {
 		getCurrentPlayer().setLoan();
 	}
@@ -329,31 +375,6 @@ public class MainGame {
 		cardDrawn.doAction(players, turn, numberOfPlayersInGame); // Manipulate player stats based on the card
 		
 		return cardDrawn;
-	}
-	
-	public static int executeMagentaSpace() {
-		int magentaID = MagentaSpaces.getMagentaID(getCurrentPlayer().getPlayerLocation()); // Check what kind of magenta space it is
-		
-		switch (magentaID) {
-		case 0 : { // College Career Choice
-		} break;
-		case 1 : { // Job Search
-		} break;
-		case 2 : { // Buy House
-		} break;
-		case 3 : { // Get Married
-			
-		} break;
-		case 4 : { // Baby
-		} break;
-		case 5 : { // Graduate
-		} break;
-		case 6 : { // Conjunction
-		} break;
-		default : System.out.println("Magenta coordinate not recognized.");
-		}
-		
-		return magentaID;
 	}
 	
 	/**
@@ -373,8 +394,225 @@ public class MainGame {
 		getCurrentPlayer().setGraduate(true);
 	}
 	
+	/**
+	 * Draw top two career cards. Career cards drawn must not currently be in use by another player. (College Career Choice magenta event)
+	 * @return Cards drawn [0] & [1] - Career cards
+	 */
+	@SuppressWarnings("unlikely-arg-type")
+	public static ArrayList<Cards> executeCollegeCareerChoice_DrawCareer() {
+		ArrayList<Cards> cardsDrawn = new ArrayList<Cards>();
+		Cards temp;
+		
+		// Keep drawing salary cards until ... 
+		while (DeckOfCareerCards.top().equals(getCurrentPlayer().getCareer()) // Career card must not be equal to current player's career  
+				|| DeckOfCareerCards.top().hasOwner()) // No one has taken this card yet
+			DeckOfCareerCards.pop();
+		
+		temp = DeckOfCareerCards.top();
+		
+		cardsDrawn.add(temp);
+		
+		// Keep drawing salary cards until ... 
+		DeckOfCareerCards.pop(); // keep searching
+		while (DeckOfCareerCards.top().equals(getCurrentPlayer().getCareer()) // Career card must not be equal to current player's career  
+				|| DeckOfCareerCards.top().hasOwner()) // No one has taken this card yet
+			DeckOfCareerCards.pop();
+		
+		temp = DeckOfCareerCards.top();
+		DeckOfCareerCards.top().setHasOwner(true);
+		
+		cardsDrawn.add(temp);
+		
+		DeckOfCareerCards.shuffle();
+		
+		return cardsDrawn;
+	}
+	
+	/**
+	 * Draw top two salary cards. (College Career Choice magenta event)
+	 * @return Cards drawn [0] & [1] - Salary cards
+	 */
+	public static ArrayList<Cards> executeCollegeCareerChoice_DrawSalary() {
+		ArrayList<Cards> cardsDrawn = new ArrayList<Cards>();
+		Cards temp;
+		
+		// Draw salary card
+		temp = DeckOfSalaryCards.pop();		
+		cardsDrawn.add(temp);
+		
+		// Draw salary card
+		temp = DeckOfSalaryCards.pop();
+		cardsDrawn.add(temp);
+		
+		DeckOfSalaryCards.shuffle();
+		
+		return cardsDrawn;
+	}
+	
+	/**
+	 * Executes when a player has chosen a career card (magenta space event).
+	 * Assign chosen career card to current player. Set salary card ownership status as true.
+	 * Also executed on Job Search event
+	 * @param typeOfCardChosen
+	 */
+	public static void executeCollegeCareerChoice_CareerChosen(String typeOfCardChosen) {
+		CareerCard tempChosen = null;
+		
+		// Find the card chosen
+		while (tempChosen == null) {
+			if (DeckOfCareerCards.top().getTypeOfCard().equals(typeOfCardChosen))
+				tempChosen = DeckOfCareerCards.top();
+			else
+				DeckOfCareerCards.pop();
+		}
+		DeckOfCareerCards.top().setHasOwner(true);
+		
+		DeckOfCareerCards.shuffle();
+		getCurrentPlayer().setNewCareer(tempChosen);
+	}
+	
+	/**
+	 * Executes when a player has chosen a salary card (magenta space event).
+	 * Assign chosen salary card to current player.
+	 * Also executed on Job Search event
+	 * @param typeOfCardChosen
+	 */
+	public static void executeCollegeCareerChoice_SalaryChosen(String salary) {
+		SalaryCard tempDrawn = DeckOfSalaryCards.getCard(salary);
+		
+		getCurrentPlayer().setNewCareer(tempDrawn);
+	}
+
+	/**
+	 * Executes when a player lands on a Job Search magenta space.
+	 * Draw a career card and salary card. Career card must not be in use by other players.
+	 * @return drawn career card [0] and salary card [1]
+	 */
+	@SuppressWarnings("unlikely-arg-type")
+	public static ArrayList<Cards> executeJobSearch() {
+		ArrayList<Cards> cardsDrawn = new ArrayList<Cards>();
+		Cards temp;
+		
+		// Keep drawing salary cards until ... 
+		while (DeckOfCareerCards.top().equals(getCurrentPlayer().getCareer()) // Career card must not be equal to current player's career  
+				|| DeckOfCareerCards.top().hasOwner()) // No one has taken this card yet
+			DeckOfCareerCards.pop();
+		
+		temp = DeckOfCareerCards.top();
+		
+		cardsDrawn.add(temp);
+		
+		// Draw salary card
+		temp = DeckOfSalaryCards.pop();		
+		cardsDrawn.add(temp);
+		
+		DeckOfCareerCards.shuffle();
+		DeckOfSalaryCards.shuffle();
+		
+		return cardsDrawn;
+	}
+	
+	@SuppressWarnings("unlikely-arg-type")
+	public static void executeBuyHouse(String chosenTypeOfHouse) {
+		HouseCard tempChosen = null;
+		
+		for (HouseCard e : houseCards)
+			if (e.equals(chosenTypeOfHouse))
+				tempChosen = e;
+		
+		getCurrentPlayer().reduceMoneyBalance(tempChosen.getPrice());
+		getCurrentPlayer().setHouse(tempChosen);
+		tempChosen.setOwner(getCurrentPlayer());
+	}
+
+	public static String executeBlueCard() {
+		int nRand = rand.nextInt(6);
+		while (nRand == 0)
+			nRand = rand.nextInt(6);
+		
+		return DeckOfBlueCards.pop().doAction(players, turn, nRand);
+	}
+	
+	/**
+	 * Execute appropriate greenspace actions
+	 * @return spaceID of the green space (0 - Pay Day, 1 - Pay Raise)
+	 */
+	public static int executeGreenSpace() {
+		int spaceID = GreenSpaces.getSpaceID(getCurrentPlayer().getPlayerLocation());
+		
+		GreenSpaces.doAction(players[turn], spaceID);
+		
+		return spaceID;
+	}
+	
 	public static int getNumberofplayersingame() {
 		return numberOfPlayersInGame;
+	}
+	
+	/**
+	 * Player lands on Baby magenta space. Generate a number. If odd, a baby. If even, twins.
+	 * Collect $5000 gift for each child from each player.
+	 * @return generated value
+	 */
+	public static int executeBaby() {
+		int nVal = rand.nextInt(11);
+		
+		// Set baby
+		if (nVal % 2 == 0) // Even, have twins
+			getCurrentPlayer().setBabyAmount(2);
+		else
+			getCurrentPlayer().setBabyAmount(1);
+
+		// Collect money from each player ($5000 per child)
+		for (Player e : players)
+			if (e.getPlayerNumber() != turn) {
+				e.reduceMoneyBalance(5000.00 * getCurrentPlayer().getBabyAmount());
+				getCurrentPlayer().addMoneyBalance(5000.00 * getCurrentPlayer().getBabyAmount());
+			}
+		
+		return nVal;
+	}
+	
+	public static void retire() {
+		getCurrentPlayer().setReachedEnd(true);
+		
+		switch (trackWinner) {
+		case 0 : getCurrentPlayer().addMoneyBalance(100000.00); break; // First winner
+		case 1 : getCurrentPlayer().addMoneyBalance(50000.00); break; // Second winner
+		case 2 : getCurrentPlayer().addMoneyBalance(20000.00);
+		}
+		trackWinner++;
+		
+		getCurrentPlayer().addMoneyBalance(getCurrentPlayer().getBabyAmount() * 10000.00);
+		if (getCurrentPlayer().getHouseCard() != null)
+			getCurrentPlayer().addMoneyBalance(getCurrentPlayer().getHouseCard().getPrice());
+		
+		getCurrentPlayer().payLoan();
+	}
+	
+	/**
+	 * Determines the winner
+	 * @return player turn winer
+	 */
+	public static int determineWinner() {
+		int max = 0;
+		if (numberOfPlayersInGame == 2) { // 2 players
+			for (int i = 0; i < 2 && max != -1; i++)
+				if (players[i].getMoneyBalance() > players[max].getMoneyBalance())
+					max = i;
+				else if (i != max && players[i].getMoneyBalance() == players[max].getMoneyBalance())
+					max = -1;
+		}
+		
+		else { // 3 players
+			for (int i = 0; i < 3 && max != -1; i++)
+				if (players[i].getMoneyBalance() > players[max].getMoneyBalance())
+					max = i;
+				else if (i != max && players[i].getMoneyBalance() == players[max].getMoneyBalance())
+					max = -1;
+		}
+		
+		return max;
 	}
 	
 	public static Player[] getPlayers() {
@@ -385,11 +623,16 @@ public class MainGame {
 		return players[turn];
 	}
 	
-	public static void nextTurn() { // TODO: skip players who are done playing
-		if (numberOfPlayersInGame == 2) // Cycle from 0 to 1 (Two players)
-			turn = (turn == 0) ? turn+1 : 0;
+	public static void nextTurn() {
+		if (numberOfPlayersInGame == 2)  // Cycle from 0 to 1 (Two players)
+			do
+			turn = (turn == 0 ) ? turn+1 : 0;
+			while (players[turn].hasReachedEndSpace());
+		
 		else // Cycle from 0 to 2 (Three players)
+			do
 			turn = (turn < 2) ? turn+1 : 0;
+			while (players[turn].hasReachedEndSpace());
 	}
 	
 	/**

@@ -86,8 +86,20 @@ public class HouseCard extends Cards{
 		hasOwner = true;
 	}
 	
+	/**
+	 * Returns if house card has an owner
+	 * @return owner status
+	 */
 	public boolean hasOwner() {
 		return hasOwner;
+	}
+	
+	public String getHouseType() {
+		return houseType;
+	}
+	
+	public double getPrice() {
+		return price;
 	}
 	
 	@Override

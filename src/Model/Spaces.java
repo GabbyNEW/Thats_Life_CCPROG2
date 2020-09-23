@@ -41,7 +41,7 @@ public abstract class Spaces {
 			if (e[0] == coordinate[0] && e[1] == coordinate[1])
 				return 4;
 		
-		return -1;
+		return -1; // end space
 	}
 	
 }
