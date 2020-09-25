@@ -425,7 +425,7 @@ public class BoardGUI {
 		else
 			payLoanButton.setEnabled(false);
 		
-		messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>Career card:" + cards.get(0).getTypeOfCard() + "</br>"
+		messageLabel.setText("<html>Player " + (MainGame.getTurn() + 1) + ":<br/>Career card:" + cards.get(0).getTypeOfCard() + "<br/>"
 				+ "Salary: " + ((SalaryCard)cards.get(1)).getSalary() + "<br/>Tax Due: " + ((SalaryCard)cards.get(1)).getTaxDue()
 				+ "<br/><br/>Throw a \"Dice\"!</html>");
 		

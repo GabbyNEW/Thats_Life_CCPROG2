@@ -32,7 +32,7 @@ public class Controller implements ActionListener {
 	 * @param args arguments included by the user before program run.
 	 */
 	public static void main(String[] args) {
-		game = new MainGame(); // Create game instance.
+		game = new MainGame(args); // Create game instance.
 		
 		startGUI = new StartGUI();
 		new Controller(startGUI);

@@ -154,7 +154,7 @@ public class Player {
 	}
 	
 	/**
-	 * Executes when a player chooses College path as a starting life path.
+	 * Executes when a player chooses College path as a starting life path. 
 	 * @param amount the amount of loan to set to each players at the start of the game
 	 */
 	public void setLoan() { 

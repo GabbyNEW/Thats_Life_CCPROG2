@@ -4,10 +4,7 @@ import java.util.*;
  * 	This is the absolute main class of the program that stores the card decks, the players, and other information crucial data for program run.
  * 	The class also contains methods that facilitate the execution of the game's actions (e.g draw & generate cards, modify player status)
  *  This program takes in terminal arguments for testing.<P>
- *  ARGUMENT LIST:<P> 
  * -mt (manual turn) Player number turn is user-specified per round.<P>
- * -cm (custom money) user specifies a custom starting money for each players (default $200000) <P>
- * -cl (custom loan) user specifies a custom starting loan balance to every player (does not affect interest)<P>
  */
 public class MainGame {
 	// Game-influenced variables
@@ -25,11 +22,16 @@ public class MainGame {
 	private static int numberOfMoves; // 1 - 10
 
 	private static int trackWinner;
+	private static boolean ARGS_manualTurn;
 	
 	private static Scanner input = new Scanner(System.in);
 	private static Random rand = new Random();
 	
-	public MainGame() { // Constructor
+	/**
+	 * Proceed to instantiate cards and check if -mt terminal argument is included. 
+	 * @param args terminal arguments
+	 */
+	public MainGame(String[] args) { // Constructor
 		System.out.println("Program start.");
 		// Begin instantiation
 		actionCards = new DeckOfActionCards(); // instantiate actionCards
@@ -42,6 +44,8 @@ public class MainGame {
 			houseCards.add(new HouseCard(i));
 		
 		turn = 0; // Before game starts, set player turn to 0 (e.g Player 1's turn, value is 0; Player 2's turn, value is 1 etc.)
+		
+		ARGS_manualTurn = (Arrays.asList(args).contains("-mt")) ? true : false;
 	}
 	
 	/**
@@ -58,15 +62,25 @@ public class MainGame {
 			players[i] = new Player(i);
 	}
 	
+	/**
+	 * This method is called whenever a user generates a number of moves. 
+	 * Range of numbers to generate is between 1 - 10
+	 * Sometimes 0 is generated. In that case, repeat again until non-zero result.
+	 */
 	public void throwDice() {
-		while (numberOfMoves == 0) // Prevent 0, make sure all previous moves have been used up before this is called 
-			numberOfMoves = rand.nextInt(11); // (TODO reset to 11) Throw a dice (1-10)
-		System.out.println("Move: " + numberOfMoves);
+		if (ARGS_manualTurn) { // -mt enabled, manually specify number of moves for each round
+			System.out.print("Enter # of moves for Player " + (turn + 1) + ": ");
+			numberOfMoves = Integer.parseInt(input.nextLine());
+		}
+		else {
+			while (numberOfMoves == 0) // Prevent 0, make sure all previous moves have been used up before this is called 
+				numberOfMoves = rand.nextInt(11); 
+			System.out.println("Move: " + numberOfMoves);
+		}
 	}
 	
 	/**
 	 * Moves the player across the board and updates its player location based on the given random number generated
-	 * @param numOfMoves
 	 */
 	public void movePlayer() {
 		int[] newLocation = new int[2]; // This is where to store the new player location (then assign it to player as its new location)

@@ -33,7 +33,7 @@ public class BoardArtPanel extends JPanel {
 	
 	/**
 	 * Note: [1,1] on the board is right next to the start space.
-	 * @param g
+	 * @param g Graphics
 	 */
 	public void playerMovementGUI(Graphics g) { // Draw circle based on players' coordinates.
 		Player[] players = MainGame.getPlayers();

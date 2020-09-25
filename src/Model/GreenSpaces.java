@@ -51,9 +51,7 @@ public class GreenSpaces extends Spaces {
 		
 		switch(spaceID) {
 			case 0 : { // Pay Day
-				player.addMoneyBalance(player.getSalary());
-				player.incrementCurrentPayRaise();
-				
+				player.addMoneyBalance(player.getSalary());				
 			} break;
 			case 1 : { // Pay Raise, salary raise of up to $50000.00
 				if (!(player.hasReachedMaxPayraise())) {
