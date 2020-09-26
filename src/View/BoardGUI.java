@@ -14,6 +14,9 @@ import Model.MainGame;
 import Model.Player;
 import Model.SalaryCard;
 
+/**
+ * This class is responsible for the board game GUI. 
+ */
 public class BoardGUI {
 
 	private JFrame frame;

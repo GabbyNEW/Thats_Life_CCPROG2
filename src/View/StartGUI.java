@@ -8,6 +8,10 @@ import java.awt.image.BufferedImage;
 import Model.MainGame;
 
 @SuppressWarnings("serial")
+/**
+ * This class is responsible for the start game GUI.
+ * This is where the user can choose how many players in the game (2-3).
+ */
 public class StartGUI extends JFrame {
 	private JFrame frame;
 	private JPanel panel;
@@ -69,7 +73,9 @@ public class StartGUI extends JFrame {
 		frame.revalidate();
 	}
 
-	
+	/**
+	 * Destroy the frame and get rid of all the controls.
+	 */
 	public void destroy() {
 		// Remove starting window
 		System.out.println("System: Start GUI frame disposed.");
@@ -85,7 +91,10 @@ public class StartGUI extends JFrame {
 		return (String) playerNumberBox.getSelectedItem(); // Returns an object, cast object as String
 	}
 	
-	// thanks stackoverflow https://stackoverflow.com/questions/6714045/how-to-resize-jlabel-imageicon
+	/* 
+	 * Mr. Polywhir, October 2015. 
+	 * Retrieved from https://stackoverflow.com/questions/6714045/how-to-resize-jlabel-imageicon 
+	 */
    public ImageIcon scaleImage(ImageIcon icon, int w, int h) {
         int nw = icon.getIconWidth();
         int nh = icon.getIconHeight();

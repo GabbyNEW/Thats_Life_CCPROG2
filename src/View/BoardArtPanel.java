@@ -6,10 +6,19 @@ import java.awt.event.ActionListener;
 import java.awt.geom.*;
 import Model.*;
 
+/**
+ * Board art panel. This panel is responsible for drawing the board art.
+ *
+ */
 public class BoardArtPanel extends JPanel {
 	private int criticalGridCoordinate = 100;
 	
 	@Override
+	/**
+	 * Override the painComponent method to allow drawing of spaces and player pieces.
+	 * It uses a grid system to properly organize the spaces.
+	 * Everytime a player moves, this method is called again.
+	 */
 	// Each space x and y separated by 50
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g); // I don't know why, but the board goes haywire if I don't do this.
@@ -146,5 +155,3 @@ public class BoardArtPanel extends JPanel {
 		g.drawString("Search Job", 117, 500);
 	}
 }
-
-// fillArc(int x, int y, int width, int height, int startAngle, int arcAngle)
