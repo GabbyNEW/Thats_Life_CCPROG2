@@ -2,6 +2,9 @@ package Model;
 
 import java.util.*;
 
+/**
+ * Constructor for salary cards
+ */
 public class SalaryCard extends Cards {
 
 	private double salary;

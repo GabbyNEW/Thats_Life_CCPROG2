@@ -4,13 +4,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+/**
+ * This class is for blue cards. 
+ * There are 7 blue cards:<P>
+ * Lawsuit, Salary Tax Due, Ski Accident, Computer Repair, World Cup, F1 Race, Tip the Server.
+ */
 public class BlueCard extends Cards {
 	
+	/**
+	 * Simple constructor class that creates blue card
+	 * @param randomNumber 
+	 */
 	public BlueCard (int randomNumber)
 	{
 		mainID = randomNumber;
 	}
 	
+	/**
+	 * Assign description to the action card
+	 * @param randomNumber mainID of the blue card
+	 */
 	public void assignDescription (int mainID)
 	{
 		switch (mainID)

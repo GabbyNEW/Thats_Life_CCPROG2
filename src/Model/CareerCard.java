@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+/**
+ * Class for career cards.  
+ */
 public class CareerCard extends Cards {
 	
 	private boolean DegreeRequired;
@@ -11,11 +14,19 @@ public class CareerCard extends Cards {
 	
 	private int payRaise;
 	
+	/**
+	 * Constructor for career cards 
+	 * @param randomNumber
+	 */
 	public CareerCard (int randomNumber)
 	{
 		mainID = randomNumber;
 	}
 	
+	/**
+	 * Assigns the description for career cards
+	 * @param mainID
+	 */
 	public void assignDescription (int mainID)
 	{
 		Random rand = new Random ();
@@ -81,21 +92,36 @@ public class CareerCard extends Cards {
 		}
 	}
 	
-	
+	/**
+	 * Gets the maximum pay raise value of the career card
+	 * @return the maximum number of pay raise
+	 */
 	public int getPayRaise ()
 	{
 		return this.payRaise;
 	}
 	
+	/**
+	 * Checks if the career card requires a degree
+	 * @return true if a degree is requried, false otherwise
+	 */
 	public boolean isDegreeRequired ()
 	{
 		return this.DegreeRequired;
 	}
 	
+	/**
+	 * Toggles the card if it is currently in use by a player
+	 * @param status true if a player has this career card, false otherwise
+	 */
 	public void setHasOwner(boolean status) {
 		hasOwner = status;
 	}
 	
+	/**
+	 * Gets the status of the card if it is currently in use by a player
+	 * @return true if it is currently in use by a player, false otherwise
+	 */
 	public boolean hasOwner() {
 		return hasOwner;
 	}

@@ -2,11 +2,16 @@ package Model;
 
 import java.util.Random;
 
+/**
+ * Class of blue spaces.
+ */
 public class BlueSpaces extends Spaces {
-	
+
+	/**
+	 * Constructor for blue space.
+	 */
 	public BlueSpaces() {
 		generateBlueCoordinates();
-
 	}
 	
 	/**
@@ -21,6 +26,9 @@ public class BlueSpaces extends Spaces {
 		return rand.nextInt(3);
 	}
 	
+	/**
+	 * Generates the coordinates of blue spaces.
+	 */
 	public void generateBlueCoordinates() {
 		int i;
 		for (i = 0; i < BlueSpacesCoordinates.length; i++)

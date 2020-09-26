@@ -2,11 +2,17 @@ package Model;
 
 import java.util.*;
 
+/**
+ * Class for the deck of blue cards
+ */
 public class DeckOfBlueCards {
 	private static ArrayList<BlueCard> blueCards;	
 	private static int head;
 	int i;
 	
+	/**
+	 * Generate deck of blue cards when this constructor is called.
+	 */
 	public DeckOfBlueCards() {
 		blueCards = new ArrayList<BlueCard>();
 		generateDeck();
@@ -14,6 +20,9 @@ public class DeckOfBlueCards {
 		head = 6;
 	}
 	
+	/**
+	 * This creates seven blue cards.
+	 */
 	private void generateDeck() {
 		// generate deck of blue cards
 		for (i = 0; i < 7; i++)
@@ -24,11 +33,19 @@ public class DeckOfBlueCards {
 		Collections.shuffle(blueCards);	// Shuffle after generating decks
 	}
 	
+	/**
+	 * Allow access to the topmost blue card
+	 * @return
+	 */
 	public static BlueCard top ()
 	{
 		return blueCards.get(head);
 	}
 	
+	/**
+	 * Get the top most card
+	 * @return
+	 */
 	public static BlueCard pop ()
 	{
 		BlueCard temp = top();

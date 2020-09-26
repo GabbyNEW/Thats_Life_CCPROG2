@@ -2,6 +2,9 @@ package Model;
 
 import java.util.Random;
 
+/**
+ * Abstract class for cards 
+ */
 public abstract class Cards {
 	protected int mainID, subID;
 	protected String typeOfCard;

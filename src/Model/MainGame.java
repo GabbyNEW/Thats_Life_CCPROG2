@@ -383,6 +383,10 @@ public class MainGame {
 		getCurrentPlayer().setLoan();
 	}
 	
+	/**
+	 * Orange space event. Draw an action card, then perform that action card's instructions
+	 * @return drawn action card
+	 */
 	public ActionCard executeOrangeSpace() {
 		ActionCard cardDrawn = DeckOfActionCards.pop();
 		
@@ -392,7 +396,7 @@ public class MainGame {
 	}
 	
 	/**
-	 * Set current player to be married (Get Married event)
+	 * Call a magenta space event: Get Married event
 	 * @return generated number (-1 if already married)
 	 */
 	public static int executeGetMarried() {
@@ -417,7 +421,7 @@ public class MainGame {
 		ArrayList<Cards> cardsDrawn = new ArrayList<Cards>();
 		Cards temp;
 		
-		// Keep drawing salary cards until ... 
+		// Keep drawing career cards until ... 
 		while (DeckOfCareerCards.top().equals(getCurrentPlayer().getCareer()) // Career card must not be equal to current player's career  
 				|| DeckOfCareerCards.top().hasOwner()) // No one has taken this card yet
 			DeckOfCareerCards.pop();
@@ -426,7 +430,7 @@ public class MainGame {
 		
 		cardsDrawn.add(temp);
 		
-		// Keep drawing salary cards until ... 
+		// Keep drawing career cards until ... 
 		DeckOfCareerCards.pop(); // keep searching
 		while (DeckOfCareerCards.top().equals(getCurrentPlayer().getCareer()) // Career card must not be equal to current player's career  
 				|| DeckOfCareerCards.top().hasOwner()) // No one has taken this card yet
@@ -464,8 +468,8 @@ public class MainGame {
 	}
 	
 	/**
-	 * Executes when a player has chosen a career card (magenta space event).
-	 * Assign chosen career card to current player. Set salary card ownership status as true.
+	 * Executes when a player has chosen a career card (College Career Choice magenta space event).
+	 * Assign chosen career card to current player. Set career card ownership status as true.
 	 * Also executed on Job Search event
 	 * @param typeOfCardChosen
 	 */
@@ -486,7 +490,7 @@ public class MainGame {
 	}
 	
 	/**
-	 * Executes when a player has chosen a salary card (magenta space event).
+	 * Executes when a player has chosen a salary card (College Career Choice magenta space event).
 	 * Assign chosen salary card to current player.
 	 * Also executed on Job Search event
 	 * @param typeOfCardChosen
@@ -526,6 +530,11 @@ public class MainGame {
 		return cardsDrawn;
 	}
 	
+	/**
+	 * Executes when a player has chosen a house type to buy.
+	 * Find the house card within the deck, buy that house card, then set the owner to the current player.
+	 * @param chosenTypeOfHouse chosen house type
+	 */
 	@SuppressWarnings("unlikely-arg-type")
 	public static void executeBuyHouse(String chosenTypeOfHouse) {
 		HouseCard tempChosen = null;
@@ -539,6 +548,11 @@ public class MainGame {
 		tempChosen.setOwner(getCurrentPlayer());
 	}
 
+	/**
+	 * Executes when a player lands on a blue space.
+	 * Generate a number, then draw a blue card, then execute drawn blue card's instructions.
+	 * @return message detail to show to the user
+	 */
 	public static String executeBlueCard() {
 		int nRand = rand.nextInt(6);
 		while (nRand == 0)
@@ -559,6 +573,10 @@ public class MainGame {
 		return spaceID;
 	}
 	
+	/**
+	 * Gets the number of players in the game (2-3)
+	 * @return number of players in game
+	 */
 	public static int getNumberofplayersingame() {
 		return numberOfPlayersInGame;
 	}
@@ -587,21 +605,33 @@ public class MainGame {
 		return nVal;
 	}
 	
+	/**
+	 * Executes when a player has reached the end space.
+	 * 1. Collect payment from bank ($100000 1st, $50000 2nd, $20000 3rd)
+	 * 2. Collect $10000 for each child he has from the bank.
+	 * 3. Sell your house to the Bank for the amount listed on the card
+	 * 4. Repay to the Bank, all outstanding loans with interest.
+	 */
 	public static void retire() {
 		getCurrentPlayer().setReachedEnd(true);
 		
+		/*
+		 * trackWinner starts at 0. Every time a player has made it to the end, increment it. 
+		 * It is used to keep in track the winning position of the players.  
+		 */
 		switch (trackWinner) {
 		case 0 : getCurrentPlayer().addMoneyBalance(100000.00); break; // First winner
 		case 1 : getCurrentPlayer().addMoneyBalance(50000.00); break; // Second winner
-		case 2 : getCurrentPlayer().addMoneyBalance(20000.00);
+		case 2 : getCurrentPlayer().addMoneyBalance(20000.00); // 3rd winner
 		}
-		trackWinner++;
+		trackWinner++; 
 		
-		getCurrentPlayer().addMoneyBalance(getCurrentPlayer().getBabyAmount() * 10000.00);
-		if (getCurrentPlayer().getHouseCard() != null)
+		getCurrentPlayer().addMoneyBalance(getCurrentPlayer().getBabyAmount() * 10000.00); // Collect $10000 for each child
+		
+		if (getCurrentPlayer().getHouseCard() != null) // Sell your house to the Bank
 			getCurrentPlayer().addMoneyBalance(getCurrentPlayer().getHouseCard().getPrice());
 		
-		getCurrentPlayer().payLoan();
+		getCurrentPlayer().payLoan(); // Repay all loans
 	}
 	
 	/**
@@ -629,14 +659,27 @@ public class MainGame {
 		return max;
 	}
 	
+	/**
+	 * Gets the player object
+	 * @return players object
+	 */
 	public static Player[] getPlayers() {
 		return players;
 	}
 	
+	/**
+	 * Gets the current player
+	 * @return current player object
+	 */
 	public static Player getCurrentPlayer() {
 		return players[turn];
 	}
 	
+	/**
+	 * Shifts the turn (modify the turn variable)
+	 * The turn variable range is [0-2].
+	 * turn = 0 for player 1; turn = 1 for player 2; turn = 2 for player 3
+	 */
 	public static void nextTurn() {
 		if (numberOfPlayersInGame == 2)  // Cycle from 0 to 1 (Two players)
 			do
@@ -657,10 +700,18 @@ public class MainGame {
 		return turn;
 	}
 	
+	/**
+	 * Get the number of moves for the player
+	 * @return number of moves
+	 */
 	public static int getNumberOfMoves() {
 		return numberOfMoves;
 	}
 	
+	/**
+	 * Checks if all players have landed on the end space
+	 * @return if all players have landed on the end space (true)
+	 */
 	public static boolean isAllPlayersEnded() {
 		if (numberOfPlayersInGame == 2)
 			return (players[0].hasReachedEndSpace() && players[1].hasReachedEndSpace());

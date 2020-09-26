@@ -1,7 +1,7 @@
 package Model;
 import java.util.*;
 
-/** JAVADOC
+/** 
  * This class is for action cards. 
  * It includes the mainID which is used to identify a card (see below).
  * It also includes the type of card and description details for each card.<P>

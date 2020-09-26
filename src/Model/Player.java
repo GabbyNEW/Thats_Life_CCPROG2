@@ -170,38 +170,73 @@ public class Player {
 		this.salary = amount;
 	}
 	
+	/**
+	 * Set the tax due for player
+	 * @param amount tax due amount
+	 */
 	public void setTaxDue(double amount) {
 		this.taxDue = amount;
 	}
 	
+	/**
+	 * Set player to be marrieed
+	 * @param status true if the player is to be married, false otherwise
+	 */
 	public void setMarried(boolean status) {
 		married = status;
 	}
 	
+	/**
+	 * Set player to be graduated
+	 * @param status true if the player has attained a degree, false otherwise
+	 */
 	public void setGraduate(boolean status) {
 		degree = status;
 	}
 	
+	/**
+	 * Assign a house card to player (player buys that house)
+	 * @param houseCard House card to assign to player
+	 */
 	public void setHouse(HouseCard houseCard) {
 		houseCardOwned = houseCard;
 	}
 	
+	/**
+	 * Sets the number of babies for a player (1 or 2)
+	 * @param amount number of babies (1 or 2)
+	 */
 	public void setBabyAmount(int amount) {
 		this.numberOfOffsprings = amount;
 	}
 	
+	/**
+	 * Increment pay raise everytime player lands on a pay raise green space
+	 */
 	public void incrementCurrentPayRaise() {
 		currentPayRaise++;
 	}
 	
+	/**
+	 * Sets the maximum pay raise based on the career card's maximum pay raise
+	 * @param amount maximum pay raise amount to assign to player
+	 */
 	public void setMaxPayRaise(int amount) {
 		maxPayRaise = amount;
 	}
 	
+	/**
+	 * Set the end status if a player has reached the end space.
+	 * @param status true if player has reached the end space, false otherwise
+	 */
 	public void setReachedEnd(boolean status) {
 		endReached = status;
 	}
 	
+	/**
+	 * Updates the coordinates of the player. 
+	 * @param coordinate int[] that contains the coordinates after moving the board [0]- x, [1] - y
+	 */
 	public void updateCurrentLocation(int[] coordinate) {
 		currentLocation = coordinate;
 	}
@@ -223,10 +258,19 @@ public class Player {
 		return playerNumber;
 	}
 	
+	/**
+	 * Get the life path of the player.
+	 * 0 - NO chosen path yet; 1 - Career; 2 - College; 3 - Career (AFTER junction); 4 - Family
+	 * @return life path integer
+	 */
 	public int getLifePath() {
 		return lifePath;
 	}
 	
+	/**
+	 * Gets the coordinate of the current location of the player
+	 * @return the int[] coordinate of the current location [0] - x, [1] - y
+	 */
 	public int[] getPlayerLocation() {
 		return currentLocation;
 	}
@@ -255,27 +299,51 @@ public class Player {
 		return this.moneyLoanInterest;
 	}
 	
+	/**
+	 * Gets the current salary of the player
+	 * @return current salary amount
+	 */
 	public double getSalary ()
 	{
 		return this.salary;
 	}
 	
+	/**
+	 * Gets the current tax due of the player
+	 * @return tax due amount
+	 */
 	public double getTaxDue() {
 		return this.taxDue;
 	}
 	
+	/**
+	 * Gets the current number of pay raises
+	 * @return current number of pay raises
+	 */
 	public int getCurrentPayRaise() {
 		return currentPayRaise;
 	}
 	
+	/**
+	 * Gets the number of babies the player has
+	 * @return number of babies (0-2)
+	 */
 	public int getBabyAmount() {
 		return this.numberOfOffsprings;
 	}
 	
+	/**
+	 * Gets the maximum pay raise a player can have
+	 * @return maximum pay raises
+	 */
 	public int getMaxPayRaise() {
 		return maxPayRaise;
 	}
 	
+	/**
+	 * Gets the current house card assigned to the plater
+	 * @return current house card assigned
+	 */
 	public HouseCard getHouseCard() {
 		return this.houseCardOwned;
 	}
@@ -288,14 +356,26 @@ public class Player {
 		return this.degree;
 	}
 	
+	/**
+	 * Checks if a player is married
+	 * @return true if married, false otherwise
+	 */
 	public boolean isMarried() {
 		return married;
 	}
 	
+	/**
+	 * Check if the player has reached the maximum pay raise
+	 * @return true if the player has reached the maximum pay raise, false otherwise
+	 */
 	public boolean hasReachedMaxPayraise() {
 		return currentPayRaise > maxPayRaise;
 	}
 	
+	/**
+	 * Checks if the player has reached the end space located at [15,19]
+	 * @return true if the player has reached the end space located at [15,19], false otherwise
+	 */
 	public boolean hasReachedEndSpace() {
 		return endReached;
 	}

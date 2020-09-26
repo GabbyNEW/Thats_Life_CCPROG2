@@ -2,12 +2,21 @@ package Model;
 
 import java.util.ArrayList;
 
+/**
+ * Class of orange spaces 
+ */
 public class OrangeSpaces extends Spaces {
 	
+	/**
+	 * Constructor for orange spaces
+	 */
 	public OrangeSpaces() {
 		generateOrangeCoordinates();
 	}
 	
+	/**
+	 * Generates the orange space coordinates
+	 */
 	private void generateOrangeCoordinates() {
 		int i;
 		for (i = 0; i < OrangeSpacesCoordinates.length; i++)

@@ -2,6 +2,9 @@ package Model;
 
 import java.util.*;
 
+/**
+ * Class for deck of career cards. There are a total of 7 career cards. 
+ */
 public class DeckOfCareerCards {
 	private static ArrayList<CareerCard> careerCards;
 	private static int head;
@@ -13,6 +16,9 @@ public class DeckOfCareerCards {
 		generateDeck();
 	}
 	
+	/**
+	 * Generates career cards.
+	 */
 	public void generateDeck() {
 		// generate deck of career cards
 		for (i = 0; i < 7; i++)
@@ -23,11 +29,19 @@ public class DeckOfCareerCards {
 		Collections.shuffle(careerCards);	// Shuffle after generating decks
 	}
 	
+	/** 
+	 * Access the top most card.
+	 * @return top most career card.
+	 */
 	public static CareerCard top () 
 	{
 		return careerCards.get(head);
 	}
 	
+	/**
+	 * Get the top most card.
+	 * @return top most career card
+	 */
 	public static CareerCard pop () 
 	{
 		CareerCard temp = top();
@@ -42,11 +56,18 @@ public class DeckOfCareerCards {
 		return temp;
 	}
 	
+	/**
+	 * Shuffle the deck.
+	 */
 	public static void shuffle () {
 		Collections.shuffle(careerCards);
 		head = 6;
 	}
 	
+	/**
+	 * Unassign the career card from the player.
+	 * @param typeOfCard
+	 */
 	@SuppressWarnings("unlikely-arg-type")
 	public static void revokeOwnership(String typeOfCard) {
 		for (CareerCard e : careerCards)

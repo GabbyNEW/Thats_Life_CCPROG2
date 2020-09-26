@@ -2,19 +2,29 @@ package Model;
 
 import java.util.*;
 
+/**
+ * Class of house cards.
+ */
 public class HouseCard extends Cards{
 	private String houseType;
 	private double price;
 	
 	private Player owner;
 	private boolean hasOwner;
-	
+
+	/**
+	 * Constructor for house card
+	 * @param mainID
+	 */
 	public HouseCard(int mainID) {
 		this.mainID = mainID;
 		hasOwner = false;
 		assignDescriptions();
 	}
 	
+	/**
+	 * Assign the description of the card
+	 */
 	public void assignDescriptions() {
 		switch (mainID) {
 			case 0 : {
@@ -66,6 +76,9 @@ public class HouseCard extends Cards{
 	}
 	
 	@Override
+	/**
+	 * Gets the string representation of a house card
+	 */
 	public String toString() {
 		switch (mainID) {
 		case 0 : return "Split-Level | $40K";
@@ -81,6 +94,10 @@ public class HouseCard extends Cards{
 		}
 	}
 	
+	/**
+	 * Set the house card's owner
+	 * @param player player who buys the house
+	 */
 	public void setOwner(Player player) {
 		owner = player;
 		hasOwner = true;
@@ -94,17 +111,28 @@ public class HouseCard extends Cards{
 		return hasOwner;
 	}
 	
+	/**
+	 * Get the house type of the house card.
+	 * @return house type String value
+	 */
 	public String getHouseType() {
 		return houseType;
 	}
 	
+	/**
+	 * Gets the price of a house card
+	 * @return price of the house card
+	 */
 	public double getPrice() {
 		return price;
 	}
 	
 	@Override
-	public boolean equals(Object obj) {
-		String name = (String) obj;
+	/**
+	 * Check if the given house type is equal to the card's house type.
+	 */
+	public boolean equals(Object obj) { 
+		String name = (String) obj; // Compare the house type String to the card
 		return name.contentEquals(houseType);
 	}
 }

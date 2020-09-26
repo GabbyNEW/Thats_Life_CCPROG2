@@ -3,16 +3,25 @@ package Model;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Class for magenta spaces 
+ */
 public class MagentaSpaces extends Spaces {
 	
 	private static Random rand;
 
+	/**
+	 * Magenta space constructor
+	 */
 	public MagentaSpaces() {
 		generateMagentaCoordinates();
 		
 		rand = new Random();
 	}
-	
+
+	/**
+	 * Generates the coordiantes of magenta spaces
+	 */
 	private void generateMagentaCoordinates() {
 		int i;
 		for (i = 0; i < MagentaSpacesCoordinates.length; i++)
@@ -59,14 +68,22 @@ public class MagentaSpaces extends Spaces {
 			 return -1;
 	}
 	
-	public static CareerCard[] draw2CareerCards() { // necessary for College Career Choice magenta space, don't forget to reshuffle
+	/**
+	 * College Career Choice magenta space event. Draw two career cards
+	 * @return the two career cards drawn
+	 */
+	public static CareerCard[] draw2CareerCards() {
 		CareerCard[] temp = new CareerCard[2];
 		temp[0] = DeckOfCareerCards.pop();
 		temp[1] = DeckOfCareerCards.pop();
 		return temp;
 	}
 	
-	public static SalaryCard[] draw2SalaryCards() { // necessary for College Career Choice magenta spacem, don't forget to reshuffle
+	/**
+	 * College Career Choice magenta space event. Draw two salary cards
+	 * @return the two salary cards drawn
+	 */
+	public static SalaryCard[] draw2SalaryCards() { 
 		SalaryCard[] temp = new SalaryCard[2];
 		temp[0] = DeckOfSalaryCards.pop();
 		temp[1] = DeckOfSalaryCards.pop();
@@ -74,24 +91,28 @@ public class MagentaSpaces extends Spaces {
 	}
 	
 	/**
-	 * Set user to be married
+	 * Set user to be married.
+	 * Generate a number
+	 * If the generated number is odd, he takes $5000 from each player. 
+	 * $10000 is the generated number is even.
 	 * @param players all players
 	 * @param turn current turn
 	 */
 	public static int getMarried(Player[] players, int turn) {
-		if (!(players[turn].isMarried())) { // Set player married if single
+		if (!(players[turn].isMarried())) { // Make sure player is not yet married
 			int number = rand.nextInt(11);
 			double amount = (number % 2 == 0) ? 10000.00 : 5000.00;
-			double amountCompensate = 0;
-			players[turn].setMarried(true);
+			double amountCompensate = 0; // keep track how much money to give to the player getting married
+			players[turn].setMarried(true); // Set current player married status true
 			
-			for (Player e : players)
+			// Collect money from other players
+			for (Player e : players) 
 				if (e.getPlayerNumber() != turn) {
 					e.reduceMoneyBalance(amount);
 					amountCompensate += amount;
 				}
-			
 			players[turn].addMoneyBalance(amountCompensate);
+			
 			System.out.println("Player" + (turn + 1) + " set married.");
 			
 			return number;
@@ -101,11 +122,19 @@ public class MagentaSpaces extends Spaces {
 		}
 	}
 	
+	/**
+	 * Set the user to have a baby or a twin.
+	 * Collect $5000 gift for each child from each player. 
+	 * Unmarried player cannot have children.
+	 * @param players
+	 * @param turn
+	 */
 	public static void haveBaby(Player[] players, int turn) {
-		int number = rand.nextInt();
-		int numberOfOffsprings = (number % 2 == 0) ? 1 : 2; // 1 if even, 2 if odd
-		double amount = 5000.00 * numberOfOffsprings;
-		double amountCompensate = 0;
+		int number = rand.nextInt(); // Generate number to see if player gets a baby or twin
+		int numberOfOffsprings = (number % 2 == 0) ? 1 : 2; // one baby if even, twin if odd
+		
+		double amount = 5000.00 * numberOfOffsprings; // set how much to collect from each players
+		double amountCompensate = 0; // keep track of how much money to add to player getting the baby/s
 		
 		for (Player e : players)
 			if (e.getPlayerNumber() != turn) {

@@ -1,6 +1,9 @@
 package Model;
 import java.util.*;
 
+/**
+ * 	Class of deck of action cards. There are 50 total action cards.
+ */
 public class DeckOfActionCards {
 	protected static ArrayList<ActionCard> actionCards;
 	private static int head;

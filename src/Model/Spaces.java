@@ -2,6 +2,9 @@ package Model;
 
 import java.util.*;
 
+/**
+ * Abstract class for spaces. 
+ */
 public abstract class Spaces {
 	public static int[][] BlankSpacesCoordinates = new int[75][];
 	public static int[][] OrangeSpacesCoordinates = new int[61][];
@@ -12,6 +15,9 @@ public abstract class Spaces {
 	
 	protected static int[] endSpaceCoordinate; // TODO This is located at [15, 19] on the board.
 	
+	/**
+	 *	Constructor for spaces
+	 */
 	public Spaces() {}
 	
 	/**

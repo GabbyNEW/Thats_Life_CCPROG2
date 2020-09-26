@@ -2,17 +2,26 @@ package Model;
 
 import java.util.*;
 
+/**
+ * Class for deck of salary cards. There are a total of 10 salary cards.
+ */
 public class DeckOfSalaryCards {
 	private static ArrayList<SalaryCard> salaryCards; // 10 salary cards
 	private static int head;
 	int i;
 		
+	/**
+	 * Constructor for deck of salary cards.
+	 */
 	public DeckOfSalaryCards() {
 		head = 9;
 		salaryCards = new ArrayList<SalaryCard>();
 		generateDeck();
 	}
 	
+	/**
+	 * Generates the deck of salary cards.
+	 */
 	public void generateDeck() {
 		for (i = 1; i <= 10; i++)
 			salaryCards.add(new SalaryCard(i));

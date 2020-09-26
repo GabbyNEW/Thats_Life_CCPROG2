@@ -3,6 +3,9 @@ package Model;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Constructor class for green spaces. 
+ */
 public class GreenSpaces extends Spaces {
 	
 	private static Random rand; 
@@ -20,6 +23,9 @@ public class GreenSpaces extends Spaces {
 		rand = new Random();
 	}
 	
+	/**
+	 * Generates the coordinates of the green spaces. 
+	 */
 	public void generateGreenCoordinates() {
 		int i;
 		for (i = 0; i < GreenSpacesCoordinates.length; i++)
@@ -47,15 +53,24 @@ public class GreenSpaces extends Spaces {
 			 return -1;
 	}
 	
+	/**
+	 * Perform action based on what kind of green space the player landed.
+	 * For Pay Day, current player collects his salary from the bank.
+	 * For Pay Raise, raise current player's salary by a given amount.
+	 * Then collect from the bank the new increased salary amount. 
+	 * Increment the player's pay raise by 1.
+	 * @param player
+	 * @param spaceID
+	 */
 	public static void doAction(Player player, int spaceID) {
 		
 		switch(spaceID) {
-			case 0 : { // Pay Day
+			case 0 : { // Pay Day: collect salary
 				player.addMoneyBalance(player.getSalary());				
 			} break;
-			case 1 : { // Pay Raise, salary raise of up to $50000.00
+			case 1 : { // Pay Raise, raise salary up to $50000.00, then collect salary
 				if (!(player.hasReachedMaxPayraise())) {
-					int num = rand.nextInt(3);
+					int num = rand.nextInt(4);
 					num++;
 					double amount = 10000.00 * num;
 					
@@ -68,6 +83,5 @@ public class GreenSpaces extends Spaces {
 		}
 		
 	}
-	
 	
 }
