@@ -353,7 +353,7 @@ public class MainGame {
 		ArrayList<Cards> cardsDrawn = new ArrayList<Cards>();
 		Cards temp;
 		
-		// Keep drawing salary cards until ... 
+		// Keep drawing career cards until ... 
 		while (DeckOfCareerCards.top().isDegreeRequired() // Degree must not be required
 				|| DeckOfCareerCards.top().equals(getCurrentPlayer().getCareer()) // Career card must not be equal to current player's career  
 				|| DeckOfCareerCards.top().hasOwner()) // No one has taken this card yet

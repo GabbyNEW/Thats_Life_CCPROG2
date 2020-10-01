@@ -978,6 +978,7 @@ public class BoardGUI {
 	public void setBlueSpaceLanded(String message) {
 		updatePlayerStats();
 		// SW
+		blueCard.setIcon(blueCardFront);
 		chooseHouseBox.setEnabled(false);
 		buyHouseButton.setEnabled(false);
 		chooseStartPathBox.setEnabled(false);

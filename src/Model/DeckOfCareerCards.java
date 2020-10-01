@@ -81,7 +81,6 @@ public class DeckOfCareerCards {
 	
 	/**
 	 * Display on the terminal all cards generated on a given deck.
-	 * @param deck the deck to show all cards
 	 */
 	public static void displayDeck() {
 		for(CareerCard card : careerCards) // probably what you see on the terminal

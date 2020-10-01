@@ -72,7 +72,6 @@ public class DeckOfActionCards {
 	
 	/**
 	 * Display on the terminal all cards generated on a given deck.
-	 * @param deck the deck to show all cards
 	 */
 	public static void displayDeck() {
 			System.out.println("System: Showing all generated ACTION CARDS:");

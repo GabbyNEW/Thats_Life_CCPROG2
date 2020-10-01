@@ -11,10 +11,7 @@ public class GreenSpaces extends Spaces {
 	private static Random rand; 
 	
 	/**
-	 * 
-	 * @param x x coordinate of the space at the board
-	 * @param y y coordinate of the space at the board
-	 * @param spaceID the spaceID for the space to be assigned to<P>
+	 * Constructor for green spaces.
 	 * 0 - Pay Day<P>
 	 * 1 - Pay Raise
 	 */

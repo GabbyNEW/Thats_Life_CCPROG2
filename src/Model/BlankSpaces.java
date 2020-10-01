@@ -2,6 +2,9 @@ package Model;
 
 import java.util.*;
 
+/**
+ * This class is for blank spaces.
+ */
 public class BlankSpaces extends Spaces {
 	
 	public BlankSpaces() {

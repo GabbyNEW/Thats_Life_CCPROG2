@@ -22,7 +22,7 @@ public class BlueCard extends Cards {
 	
 	/**
 	 * Assign description to the action card
-	 * @param randomNumber mainID of the blue card
+	 * @param mainID mainID of the blue card
 	 */
 	public void assignDescription (int mainID)
 	{

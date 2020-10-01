@@ -149,13 +149,16 @@ public class Player {
 		this.career = career;
 	}
 	
+	/**
+	 * Sets the chosen path for a player.
+	 * @param path path chosen: 0 - NO chosen path yet; 1 - Career; 2 - College; 3 - Career (AFTER junction); 4 - Family
+	 */
 	public void setNewPath(int path) {
 		lifePath = path;
 	}
 	
 	/**
 	 * Executes when a player chooses College path as a starting life path. 
-	 * @param amount the amount of loan to set to each players at the start of the game
 	 */
 	public void setLoan() { 
 		this.moneyLoan = 40000.00;
